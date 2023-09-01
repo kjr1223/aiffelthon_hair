@@ -9,7 +9,6 @@ class AnalysisScreen extends StatefulWidget {
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
   File? _image;
-  final ImageLoader _imageLoader = ImageLoader();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           SizedBox(height: 20),
           Center(
             child: ElevatedButton(
-              onPressed: _loadImage,
+              onPressed: () async {
+                final loadedImage = await loadImage(); // 갤러리에서 이미지 불러오기
+                if (loadedImage != null) {
+                  setState(() {
+                    _image = loadedImage;
+                  });
+                }
+              },
               child: Text('Select Image'),
             ),
           ),
@@ -58,14 +64,5 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _loadImage() async {
-    final loadedImage = await _imageLoader.loadImage();
-    if (loadedImage != null) {
-      setState(() {
-        _image = loadedImage;
-      });
-    }
   }
 }
