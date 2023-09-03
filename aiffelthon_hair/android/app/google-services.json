@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "758602572142",
+    "project_id": "aiffelthon-scalp",
+    "storage_bucket": "aiffelthon-scalp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758602572142:android:af1b2d087114908ddf217f",
+        "android_client_info": {
+          "package_name": "com.example.aiffelthon_hair"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758602572142-0035m4oduk08uqfd5v5e0p15ihjstfuo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZC3qJQIxKyu3Y0N22lxhSGfwFWxEp_EI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758602572142-0035m4oduk08uqfd5v5e0p15ihjstfuo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

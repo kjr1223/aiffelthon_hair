@@ -1,9 +1,18 @@
-import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
+import 'package:aiffelthon_hair/login.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'firebase_options.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MaterialApp(
-    home: NavigationScreen(),
+    home: LoginScreen(),
   ));
 }
 

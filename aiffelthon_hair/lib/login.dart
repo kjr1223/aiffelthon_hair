@@ -1,9 +1,31 @@
+import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'firebase_options.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-void main() => runApp(const MyApp());
+Future<UserCredential> signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithCredential(credential);
+}
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   static const String _title = 'App';
 
@@ -13,20 +35,20 @@ class MyApp extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: const MyStatefulWidget(),
+        body: const LoginStatefulWidget(),
       ),
     );
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
+class LoginStatefulWidget extends StatefulWidget {
+  const LoginStatefulWidget({Key? key}) : super(key: key);
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<LoginStatefulWidget> createState() => _LoginState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _LoginState extends State<LoginStatefulWidget> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -108,7 +130,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               )
             ],
             mainAxisAlignment: MainAxisAlignment.center,
-          )
+          ),
+          SignInButton(Buttons.Google, onPressed: () async {
+            try {
+              UserCredential userCredential = await signInWithGoogle();
+              print('User ID: ${userCredential.user?.uid}');
+              // 로그인 성공 시 Navigation_screen으로 이동
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => NavigationScreen()));
+            } catch (error) {
+              print('Error: $error');
+              // 에러 처리를 추가합니다.
+            }
+          })
         ],
       ),
     );
