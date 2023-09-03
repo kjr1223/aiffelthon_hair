@@ -1,4 +1,4 @@
-package com.example.aiffelthon_
+package com.example.aiffelthon_hair
 
 import io.flutter.embedding.android.FlutterActivity
 

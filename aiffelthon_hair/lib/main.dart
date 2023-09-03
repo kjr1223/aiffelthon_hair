@@ -1,4 +1,4 @@
-import 'package:aiffelthon_/ui_screen/navigation_screen.dart';
+import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

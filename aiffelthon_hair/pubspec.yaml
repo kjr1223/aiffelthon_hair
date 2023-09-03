@@ -1,4 +1,4 @@
-name: aiffelthon_
+name: aiffelthon_hair
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -13,11 +13,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^0.8.4+4
-  cached_network_image: ^3.1.0
-  
-  
+  tflite_flutter: ^0.10.1
+  image: ^4.0.17
+  image_picker: ^1.0.4
   cupertino_icons: ^1.0.2
+ 
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +29,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:  # Add this 'assets' section
+  assets:  
     - assets/model/quantized_model.tflite
 
