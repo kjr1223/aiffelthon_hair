@@ -1,28 +1,7 @@
-import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
+import 'package:aiffelthon_hair/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'firebase_options.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-
-Future<UserCredential> signInWithGoogle() async {
-  // Trigger the authentication flow
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
-
-  // Create a new credential
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
-
-  // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance.signInWithCredential(credential);
-}
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -136,8 +115,8 @@ class _LoginState extends State<LoginStatefulWidget> {
               UserCredential userCredential = await signInWithGoogle();
               print('User ID: ${userCredential.user?.uid}');
               // 로그인 성공 시 Navigation_screen으로 이동
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => NavigationScreen()));
+              // Navigator.pushReplacement(context,
+              //     MaterialPageRoute(builder: (context) => NavigationScreen()));
             } catch (error) {
               print('Error: $error');
               // 에러 처리를 추가합니다.

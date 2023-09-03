@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:aiffelthon_hair/imageLoader.dart';
-import 'package:aiffelthon_hair/classifyer.dart';
+import 'package:aiffelthon_hair/ui_screen/imageLoader.dart';
+import 'package:aiffelthon_hair/ai/classifyer.dart';
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
