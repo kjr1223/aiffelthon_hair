@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aiffelthon_hair/database/load_analysis_result.dart';
 import 'package:flutter/material.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -6,93 +9,82 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  String _result = '';
-  String _startDate = ''; // 날짜를 저장할 변수
+  List<HistoryItem> _historyItems = []; // 데이터베이스에서 불러온 항목을 저장할 리스트
 
   @override
   void initState() {
     super.initState();
-    // 현재 날짜를 구해서 _startDate 변수에 저장 (년-월-일 형식)
-    DateTime now = DateTime.now();
-    _startDate =
-        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    _loadHistoryData();
+  }
+
+  void _loadHistoryData() async {
+    final results = await getAnalysisResults();
+    setState(() {
+      _historyItems = results.map((result) {
+        final result1 = double.parse(result['result_1'].toStringAsFixed(2));
+        final result2 = double.parse(result['result_2'].toStringAsFixed(2));
+        final result3 = double.parse(result['result_3'].toStringAsFixed(2));
+        final result4 = double.parse(result['result_4'].toStringAsFixed(2));
+
+        return HistoryItem(
+          imagePath: result['image_path'],
+          result: '양호: $result1 경증: $result2 중증도: $result3 중증: $result4',
+          analysisDate: result['analysis_date'],
+        );
+      }).toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(10),
-            child: Text(
-              '내 두피 기록',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.person,
-                size: 50,
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '날짜:',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _startDate,
-                        style: TextStyle(fontSize: 20),
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '두피 진단 결과:',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Text(
-                        _result,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+    return ListView.builder(
+      itemCount: _historyItems.length,
+      itemBuilder: (context, index) {
+        final historyItem = _historyItems[index];
+        return HistoryListItem(
+          imagePath: historyItem.imagePath,
+          result: historyItem.result,
+          analysisDate: historyItem.analysisDate,
+        );
+      },
+    );
+  }
+}
+
+class HistoryItem {
+  final String imagePath;
+  final String result;
+  final String analysisDate;
+
+  HistoryItem({
+    required this.imagePath,
+    required this.result,
+    required this.analysisDate,
+  });
+}
+
+class HistoryListItem extends StatelessWidget {
+  final String imagePath;
+  final String result;
+  final String analysisDate;
+
+  HistoryListItem({
+    required this.imagePath,
+    required this.result,
+    required this.analysisDate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Image.file(
+        File(imagePath),
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
       ),
+      title: Text('날짜: $analysisDate'),
+      subtitle: Text('두피 진단 결과: $result'),
     );
   }
 }

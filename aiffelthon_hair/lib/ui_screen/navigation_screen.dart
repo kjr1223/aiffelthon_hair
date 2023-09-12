@@ -102,6 +102,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   // 사용자가 네비게이션 바의 아이템을 탭할 때 호출되는 메서드입니다.
   void _onItemTapped(int index) {
+    // 'History' 탭이 선택되었을 때 Navigator 스택 초기화
+    if (index == 2) {
+      _navigatorKeys[2].currentState?.popUntil((route) => route.isFirst);
+    }
+
     setState(() {
       _selectedIndex = index;
     });

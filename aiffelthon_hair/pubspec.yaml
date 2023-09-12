@@ -21,6 +21,7 @@ dependencies:
   firebase_auth: ^4.9.0
   google_sign_in: ^6.1.5
   flutter_signin_button: ^2.0.0
+  sqflite: ^2.3.0
  
 
 dev_dependencies:
@@ -34,5 +35,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:  
-    - assets/model/quantized_model.tflite
+    - assets/model/model1.tflite
+    - assets/model/model2.tflite
+    - assets/model/model3.tflite
+    - assets/model/model4.tflite
+    - assets/model/model5.tflite
+    - assets/model/model6.tflite
+
 
