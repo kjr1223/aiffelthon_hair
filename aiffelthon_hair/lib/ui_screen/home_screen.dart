@@ -56,83 +56,110 @@ class _SurveyScreenState extends State<SurveyScreen> {
   String? shampooPriority;
   String? resultText;
 
+  bool isFormComplete() {
+    return gender != null &&
+        age != null &&
+        permFrequency != null &&
+        dyeFrequency != null &&
+        currentHairState != null &&
+        shampooFrequency != null &&
+        hairProducts.isNotEmpty &&
+        wantCustomCare != null &&
+        shampooPriority != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("설문조사")),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: [
-          _buildRadioListTile('성별', ['남', '여'], gender, (value) {
-            setState(() {
-              gender = value;
-            });
-          }),
-          _buildRadioListTile(
-              '나이', ['10대', '20대', '30대', '40대', '50대', '60대 이상'], age,
-              (value) {
-            setState(() {
-              age = value;
-            });
-          }),
-          _buildRadioListTile('샴푸 사용 빈도', ['1일 1회', '1일 2회', '2일 1회', '1주일 1회'],
-              shampooFrequency, (value) {
-            setState(() {
-              shampooFrequency = value;
-            });
-          }),
-          _buildRadioListTile(
-              '펌 주기', ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'], permFrequency,
-              (value) {
-            setState(() {
-              permFrequency = value;
-            });
-          }),
-          _buildRadioListTile('염색 주기(자가 염색 포함)',
-              ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'], dyeFrequency, (value) {
-            setState(() {
-              dyeFrequency = value;
-            });
-          }),
-          _buildRadioListTile(
-              '현재 모발 상태',
-              ['자연 모발', '펌 모발', '염색 모발', '탈모 모발', '곱슬 모발', '기타'],
-              currentHairState, (value) {
-            setState(() {
-              currentHairState = value;
-            });
-          }),
-          _buildCheckboxList('현재 사용하고 있는 두피모발용 제품',
-              ['샴푸', '린스', '트리트먼트', '헤어에센스', '탈모 관련 제품', '기타']),
-          _buildYesNo('맞춤 두피케어 제품사용을 희망(선호) 하시나요?'),
-          _buildRadioListTile('샴푸 구매시 중요시 고려하는 부분은 무엇인가요?',
-              ['헹굼 후 느낌', '세정력', '향', '두피자극', '가격'], shampooPriority, (value) {
-            setState(() {
-              shampooPriority = value;
-            });
-          }),
-          SizedBox(height: 20),
-          ElevatedButton(
-            child: Text('제출'),
-            onPressed: () {
+      body: ListView(padding: EdgeInsets.all(16.0), children: [
+        _buildRadioListTile('성별', ['남', '여'], gender, (value) {
+          setState(() {
+            gender = value;
+          });
+        }),
+        _buildRadioListTile(
+            '나이', ['10대', '20대', '30대', '40대', '50대', '60대 이상'], age, (value) {
+          setState(() {
+            age = value;
+          });
+        }),
+        _buildRadioListTile(
+            '샴푸 사용 빈도', ['1일 1회', '1일 2회', '2일 1회', '1주일 1회'], shampooFrequency,
+            (value) {
+          setState(() {
+            shampooFrequency = value;
+          });
+        }),
+        _buildRadioListTile(
+            '펌 주기', ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'], permFrequency,
+            (value) {
+          setState(() {
+            permFrequency = value;
+          });
+        }),
+        _buildRadioListTile('염색 주기(자가 염색 포함)',
+            ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'], dyeFrequency, (value) {
+          setState(() {
+            dyeFrequency = value;
+          });
+        }),
+        _buildRadioListTile(
+            '현재 모발 상태',
+            ['자연 모발', '펌 모발', '염색 모발', '탈모 모발', '곱슬 모발', '기타'],
+            currentHairState, (value) {
+          setState(() {
+            currentHairState = value;
+          });
+        }),
+        _buildCheckboxList('현재 사용하고 있는 두피모발용 제품',
+            ['샴푸', '린스', '트리트먼트', '헤어에센스', '탈모 관련 제품', '기타']),
+        _buildYesNo('맞춤 두피케어 제품사용을 희망(선호) 하시나요?'),
+        _buildRadioListTile('샴푸 구매시 중요시 고려하는 부분은 무엇인가요?',
+            ['헹굼 후 느낌', '세정력', '향', '두피자극', '가격'], shampooPriority, (value) {
+          setState(() {
+            shampooPriority = value;
+          });
+        }),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Text('제출'),
+          onPressed: () {
+            if (isFormComplete()) {
               String result = ''' 
-              성별: $gender
-              나이: $age
-              샴푸 사용 빈도: $shampooFrequency
-              펌 주기: $permFrequency
-              염색 주기(자가 염색 포함): $dyeFrequency
-              현재 모발 상태: $currentHairState
-              현재 사용하고 있는 두피모발용 제품: ${hairProducts.join(', ')}
-              맞춤 두피케어 제품사용을 희망하시나요?: ${wantCustomCare == true ? '예' : '아니오'}
-              샴푸 구매시 중요시 고려하는 부분: $shampooPriority
-              ''';
+                  성별: $gender
+                  나이: $age
+                  샴푸 사용 빈도: $shampooFrequency
+                  펌 주기: $permFrequency
+                  염색 주기(자가 염색 포함): $dyeFrequency
+                  현재 모발 상태: $currentHairState
+                  현재 사용하고 있는 두피모발용 제품: ${hairProducts.join(', ')}
+                  맞춤 두피케어 제품사용을 희망하시나요?: ${wantCustomCare == true ? '예' : '아니오'}
+                  샴푸 구매시 중요시 고려하는 부분: $shampooPriority
+                ''';
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ResultScreen(resultText: result),
               ));
-            },
-          ),
-        ],
-      ),
+            } else {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('알림'),
+                  content: Text('모든 항목을 선택해주세요'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('확인'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+      ]),
     );
   }
 
