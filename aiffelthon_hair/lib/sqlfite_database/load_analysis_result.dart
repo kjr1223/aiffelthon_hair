@@ -1,4 +1,4 @@
-import 'package:aiffelthon_hair/database/database_helper.dart';
+import 'package:aiffelthon_hair/sqlfite_database/database_helper.dart';
 
 Future<List<Map<String, dynamic>>> getAnalysisResults() async {
   final db = await DatabaseHelper.instance.database;

@@ -13,6 +13,8 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
+    String path = await getDatabasesPath();
+    print("Database Path: $path");
     final db = await openDatabase(
       'hair_analysis.db',
       version: 1,
@@ -20,17 +22,19 @@ class DatabaseHelper {
     );
     return db;
   }
-  // 나머지 데이터베이스 관련 메서드를 추가할 수 있습니다.
 
   void _onCreate(Database db, int version) async {
     await db.execute('''
     CREATE TABLE analysis_results (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       image_path TEXT,
+      scalptype REAL,
       result_1 REAL,
       result_2 REAL,
       result_3 REAL,
       result_4 REAL,
+      result_5 REAL,
+      result_6 REAL,
       analysis_date DATETIME
     )
   ''');

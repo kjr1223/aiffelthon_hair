@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aiffelthon_hair/database/load_analysis_result.dart';
+import 'package:aiffelthon_hair/sqlfite_database/load_analysis_result.dart';
 import 'package:flutter/material.dart';
 
 class HistoryScreen extends StatefulWidget {

@@ -1,9 +1,12 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 import 'dart:math';
-import 'package:aiffelthon_hair/database/save_analysis_result.dart';
+import 'package:aiffelthon_hair/sqlfite_database/save_analysis_result.dart';
 import 'package:flutter/material.dart';
 import 'package:aiffelthon_hair/ui_screen/imageLoader.dart';
 import 'package:aiffelthon_hair/ai/classifyer.dart';
+import 'package:aiffelthon_hair/scalp_type_analizer.dart';
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
@@ -13,10 +16,19 @@ class AnalysisScreen extends StatefulWidget {
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
-  File? _image;
-  List<List<double>>? _predictResults; // 결과를 저장할 2차원 리스트
-  bool _isLoading = false;
-  List<String> scalpType = ['미세각질', '피지과다', '모낭사이홍반', '모낭홍반농포', '비듬', '탈모'];
+  File? _image; // 갤러리에서 불러온 이미지
+  bool _isLoading = false; // 모델 연산 중 여부
+  List<List<double>>? predictionsProbs; // 예측 확률 결과
+  List<int>? predictedLabels; // 예측 라벨 결과(가장 높은 확률값들의 인덱스)
+  String? scalpType;
+  List<String> scalp_diseases = [
+    '미세각질',
+    '피지과다',
+    '모낭사이홍반',
+    '모낭홍반농포',
+    '비듬',
+    '탈모'
+  ];
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -28,20 +40,22 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (_image != null)
+            // 이미지 표시 영역
             SizedBox(
-              width: screenWidth,
-              height: screenHeight * 0.4,
+              width: screenWidth * 0.8,
+              height: screenHeight * 0.3,
               child: Image.file(
                 _image!,
                 fit: BoxFit.cover,
               ),
             )
           else
-            Text('No image selected.'),
-          SizedBox(height: 20),
+            const Text('No image selected.'),
+          const SizedBox(height: 20),
           Center(
             child: ElevatedButton(
               onPressed: () async {
+                // 갤러리에서 이미지를 불러오기
                 final loadedImage = await loadImage();
                 if (loadedImage != null) {
                   setState(() {
@@ -49,46 +63,43 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     _isLoading = true;
                   });
 
-                  final preprocessedImage = preprocessImage(_image);
-                  final predictResults = [];
-                  for (var i = 1; i <= 6; i++) {
-                    final modelPath = 'assets/model/model$i.tflite';
-                    final predictResult = await classifyPreprocessedImage(
-                        modelPath, preprocessedImage);
-                    predictResults.add(predictResult);
-                  }
+                  // 예측 작업 수행
+                  final predictResult =
+                      await classifyPreprocessedImage(_image!);
 
                   setState(() {
-                    _predictResults = predictResults.cast<List<double>>();
+                    predictionsProbs = predictResult;
+                    scalpType =
+                        getMostSimilarScalpType(predictionsProbs!); // 두피 유형 진단
                     _isLoading = false;
                   });
-                  // 분석결과 저장
-                  // await saveAnalysisResult(loadedImage, predictResults);
+                  // 데이터베이스에 분석결과 저장
+                  // await saveAnalysisResult(loadedImage, probabilities);
                 }
               },
-              child: Text('Select Image'),
+              child: const Text('두피 사진 불러오기'),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
               child: Column(
             children: [
-              Text(
-                'Scalp Type Result:',
+              const Text(
+                'Scalp Condition Result:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               if (_isLoading) ...[
-                CircularProgressIndicator(
+                const CircularProgressIndicator(
                   color: Colors.black87,
                 ),
-              ] else if (_predictResults != null) ...[
+              ] else if (predictionsProbs != null) ...[
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
+                      const Column(
                         children: [
                           Text('카테고리'),
                           Text('양호:'),
@@ -97,33 +108,37 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                           Text('중증:')
                         ],
                       ),
-                      for (int i = 0; i < _predictResults!.length; i++) ...[
-                        SizedBox(width: 20),
+                      for (int i = 0; i < predictionsProbs!.length; i++) ...[
+                        const SizedBox(width: 20),
                         Column(
                           children: [
-                            Text(scalpType[i]),
-                            Text('${_predictResults![i][0].toStringAsFixed(2)}',
+                            Text(scalp_diseases[i]),
+                            Text(
+                                '${predictionsProbs![i][0].toStringAsFixed(2)}',
                                 style: TextStyle(
-                                    color: _predictResults![i][0] ==
-                                            _predictResults![i].reduce(max)
+                                    color: predictionsProbs![i][0] ==
+                                            predictionsProbs![i].reduce(max)
                                         ? Colors.red
                                         : Colors.black)),
-                            Text('${_predictResults![i][1].toStringAsFixed(2)}',
+                            Text(
+                                '${predictionsProbs![i][1].toStringAsFixed(2)}',
                                 style: TextStyle(
-                                    color: _predictResults![i][1] ==
-                                            _predictResults![i].reduce(max)
+                                    color: predictionsProbs![i][1] ==
+                                            predictionsProbs![i].reduce(max)
                                         ? Colors.red
                                         : Colors.black)),
-                            Text('${_predictResults![i][2].toStringAsFixed(2)}',
+                            Text(
+                                '${predictionsProbs![i][2].toStringAsFixed(2)}',
                                 style: TextStyle(
-                                    color: _predictResults![i][2] ==
-                                            _predictResults![i].reduce(max)
+                                    color: predictionsProbs![i][2] ==
+                                            predictionsProbs![i].reduce(max)
                                         ? Colors.red
                                         : Colors.black)),
-                            Text('${_predictResults![i][3].toStringAsFixed(2)}',
+                            Text(
+                                '${predictionsProbs![i][3].toStringAsFixed(2)}',
                                 style: TextStyle(
-                                    color: _predictResults![i][3] ==
-                                            _predictResults![i].reduce(max)
+                                    color: predictionsProbs![i][3] ==
+                                            predictionsProbs![i].reduce(max)
                                         ? Colors.red
                                         : Colors.black)),
                           ],
@@ -131,10 +146,20 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       ],
                     ],
                   ),
-                )
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '가장 유사한 두피 유형:',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  scalpType!,
+                  style: const TextStyle(fontSize: 16),
+                ),
               ] else ...[
-                Text('분석결과없음'),
-              ]
+                const Text('분석결과없음'),
+              ],
             ],
           )),
         ],
@@ -143,7 +168,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   }
 }
 
-
+// 수정 전 코드
 // class _AnalysisScreenState extends State<AnalysisScreen> {
 //   File? _image;
 //   List<double>? _predictResult;

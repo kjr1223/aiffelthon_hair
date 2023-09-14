@@ -21,39 +21,52 @@ Float32List preprocessImage(File? imageFile) {
       inputImageAs4DList[baseIdx + 2] = pixel.b.toDouble();
     }
   }
+  print('이미지 전처리 완료');
   return inputImageAs4DList;
 }
 
 // 이미지 분류 함수
-Future<List<double>> classifyPreprocessedImage(
-    String modelPath, Float32List preprocessedImage) async {
-  await Future.delayed(Duration(seconds: 3)); // 2초 딜레이 추가
+Future<List<List<double>>?> classifyPreprocessedImage(File inputImage) async {
+  await Future.delayed(const Duration(seconds: 1)); // 2초 딜레이 추가
+  File image = inputImage;
+  Float32List preprocessedImage = preprocessImage(image); // 입력 이미지 전처리
+  List<List<double>>? predictionsProbs = []; // 예측 확률 결과
+
   Interpreter? interpreter;
 
-  try {
-    // 모델 로드
-    interpreter = await Interpreter.fromAsset(modelPath);
-    print('모델의 입력 모양: ${interpreter.getInputTensors()[0].shape}');
-    print('모델의 출력 모양: ${interpreter.getOutputTensors()[0].shape}');
+  for (int i = 1; i <= 6; i++) {
+    final modelPath = 'assets/model/model$i.tflite';
 
-    final inputShape = interpreter.getInputTensors()[0].shape;
-    final outputShape = interpreter.getOutputTensors()[0].shape;
-    final outputLength =
-        outputShape.reduce((value, element) => value * element);
-    final outputs = List<double>.filled(outputLength, 0).reshape(outputShape);
+    try {
+      // 모델 로드
+      interpreter = await Interpreter.fromAsset(modelPath);
+      print("model$i load");
+      final inputShape = interpreter.getInputTensors()[0].shape;
+      final outputShape = interpreter.getOutputTensors()[0].shape;
 
-    // 모델 실행
-    interpreter.run(preprocessedImage.reshape(inputShape), outputs);
-    print(outputs[0]);
-    return outputs[0];
-  } finally {
-    // Interpreter 종료
-    if (interpreter != null) {
-      interpreter.close();
+      final outputLength =
+          outputShape.reduce((value, element) => value * element);
+      final outputs = List<double>.filled(outputLength, 0).reshape(outputShape);
+
+      // 모델 실행
+      interpreter.run(preprocessedImage.reshape(inputShape), outputs);
+
+      predictionsProbs.add(outputs[0]);
+
+      print("model$i = $outputs[0]");
+    } finally {
+      // Interpreter 종료
+      if (interpreter != null) {
+        interpreter.close();
+      }
     }
   }
+
+  return predictionsProbs;
 }
 
+
+// 수정 전 코드
 // import 'dart:io';
 // import 'dart:typed_data';
 // import 'package:tflite_flutter/tflite_flutter.dart';
