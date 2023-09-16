@@ -1,51 +1,79 @@
 import 'dart:io';
-
 import 'package:aiffelthon_hair/sqlfite_database/load_analysis_result.dart';
 import 'package:flutter/material.dart';
 
 class HistoryScreen extends StatefulWidget {
   @override
-  _HistoryScreenState createState() => _HistoryScreenState();
+  HistoryScreenState createState() => HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class HistoryScreenState extends State<HistoryScreen> {
   List<HistoryItem> _historyItems = []; // 데이터베이스에서 불러온 항목을 저장할 리스트
 
-  @override
-  void initState() {
-    super.initState();
-    _loadHistoryData();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   loadHistoryData();
+  // }
 
-  void _loadHistoryData() async {
+  // void loadHistoryData() async {
+  //   final results = await getAnalysisResults();
+  //   setState(() {
+  //     _historyItems = results
+  //         .map((result) => HistoryItem(
+  //               imagePath: result['image_path'],
+  //               analysisDate: result['analysis_date'],
+  //               scalpType: result['scalp_type'].toString(),
+  //               result1: result['result_1'].toString(),
+  //               result2: result['result_2'].toString(),
+  //               result3: result['result_3'].toString(),
+  //               result4: result['result_4'].toString(),
+  //               result5: result['result_5'].toString(),
+  //               result6: result['result_6'].toString(),
+  //             ))
+  //         .toList();
+  //   });
+  // }
+  Future<List<HistoryItem>> loadHistoryData() async {
     final results = await getAnalysisResults();
-    setState(() {
-      _historyItems = results.map((result) {
-        final result1 = double.parse(result['result_1'].toStringAsFixed(2));
-        final result2 = double.parse(result['result_2'].toStringAsFixed(2));
-        final result3 = double.parse(result['result_3'].toStringAsFixed(2));
-        final result4 = double.parse(result['result_4'].toStringAsFixed(2));
-
-        return HistoryItem(
-          imagePath: result['image_path'],
-          result: '양호: $result1 경증: $result2 중증도: $result3 중증: $result4',
-          analysisDate: result['analysis_date'],
-        );
-      }).toList();
-    });
+    return results
+        .map((result) => HistoryItem(
+              imagePath: result['image_path'],
+              analysisDate: result['analysis_date'],
+              scalpType: result['scalp_type'].toString(),
+              result1: result['result_1'].toString(),
+              result2: result['result_2'].toString(),
+              result3: result['result_3'].toString(),
+              result4: result['result_4'].toString(),
+              result5: result['result_5'].toString(),
+              result6: result['result_6'].toString(),
+            ))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _historyItems.length,
-      itemBuilder: (context, index) {
-        final historyItem = _historyItems[index];
-        return HistoryListItem(
-          imagePath: historyItem.imagePath,
-          result: historyItem.result,
-          analysisDate: historyItem.analysisDate,
-        );
+    return FutureBuilder<List<HistoryItem>>(
+      future: loadHistoryData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          _historyItems = snapshot.data ?? [];
+          return ListView.builder(
+            itemCount: _historyItems.length,
+            itemBuilder: (context, index) {
+              final historyItem = _historyItems[index];
+              return HistoryListItem(
+                imagePath: historyItem.imagePath,
+                result: historyItem.formattedResult,
+                analysisDate: historyItem.analysisDate,
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text("Error loading data"));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
@@ -53,14 +81,36 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
 class HistoryItem {
   final String imagePath;
-  final String result;
   final String analysisDate;
+  final String scalpType;
+  final String result1;
+  final String result2;
+  final String result3;
+  final String result4;
+  final String result5;
+  final String result6;
 
   HistoryItem({
     required this.imagePath,
-    required this.result,
     required this.analysisDate,
+    required this.scalpType,
+    required this.result1,
+    required this.result2,
+    required this.result3,
+    required this.result4,
+    required this.result5,
+    required this.result6,
   });
+
+  String get formattedResult {
+    return '두피유형: $scalpType, '
+        '미세각질: $result1, '
+        '피지과다: $result2, '
+        '모낭사이홍반: $result3, '
+        '모낭홍반농포: $result4, '
+        '비듬: $result5, '
+        '탈모: $result6';
+  }
 }
 
 class HistoryListItem extends StatelessWidget {
@@ -76,15 +126,38 @@ class HistoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Image.file(
-        File(imagePath),
-        width: 50,
-        height: 50,
-        fit: BoxFit.cover,
+    return Card(
+      margin: EdgeInsets.all(8.0),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Image.file(
+                  File(imagePath),
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    '날짜: $analysisDate',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Text('두피 진단 결과:', style: TextStyle(fontSize: 16)),
+            SizedBox(height: 5),
+            Text(result, style: TextStyle(fontSize: 14)),
+            // 여기에 필요한 경우 추가적인 아이콘, 버튼 등의 요소를 추가할 수 있습니다.
+          ],
+        ),
       ),
-      title: Text('날짜: $analysisDate'),
-      subtitle: Text('두피 진단 결과: $result'),
     );
   }
 }

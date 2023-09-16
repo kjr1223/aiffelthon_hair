@@ -1,6 +1,7 @@
 class AnalysisResult {
   final String imagePath;
   final DateTime analysisDate;
+  final String scalpType;
   final String result1;
   final String result2;
   final String result3;
@@ -11,6 +12,7 @@ class AnalysisResult {
   AnalysisResult({
     required this.imagePath,
     required this.analysisDate,
+    required this.scalpType,
     required this.result1,
     required this.result2,
     required this.result3,
@@ -23,8 +25,8 @@ class AnalysisResult {
   Map<String, dynamic> toMap() {
     return {
       'image_path': imagePath,
-      'analysis_date':
-          analysisDate.toIso8601String(), // Convert to string for storage
+      'analysis_date': analysisDate.toIso8601String(),
+      'scalp_type': scalpType, // Convert to string for storage
       'result_1': result1,
       'result_2': result2,
       'result_3': result3,
@@ -34,17 +36,17 @@ class AnalysisResult {
     };
   }
 
-  // Convert a Map into a AnalysisResult
-  static AnalysisResult fromMap(Map<String, dynamic> map) {
-    return AnalysisResult(
-      imagePath: map['image_path'],
-      analysisDate: DateTime.parse(map['analysis_date']),
-      result1: map['result_1'],
-      result2: map['result_2'],
-      result3: map['result_3'],
-      result4: map['result_4'],
-      result5: map['result_5'],
-      result6: map['result_6'],
-    );
-  }
+  // // Convert a Map into a AnalysisResult
+  // static AnalysisResult fromMap(Map<String, dynamic> map) {
+  //   return AnalysisResult(
+  //     imagePath: map['image_path'],
+  //     analysisDate: DateTime.parse(map['analysis_date']),
+  //     result1: map['result_1'],
+  //     result2: map['result_2'],
+  //     result3: map['result_3'],
+  //     result4: map['result_4'],
+  //     result5: map['result_5'],
+  //     result6: map['result_6'],
+  //   );
+  // }
 }

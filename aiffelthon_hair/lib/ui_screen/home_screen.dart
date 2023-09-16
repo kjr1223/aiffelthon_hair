@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'result_screen.dart';
+import 'servey_result_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -47,6 +48,8 @@ class SurveyScreen extends StatefulWidget {
 class _SurveyScreenState extends State<SurveyScreen> {
   String? gender;
   String? age;
+  String? scalpType;
+
   String? permFrequency;
   String? dyeFrequency;
   String? currentHairState;
@@ -59,6 +62,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   bool isFormComplete() {
     return gender != null &&
         age != null &&
+        scalpType != null &&
         permFrequency != null &&
         dyeFrequency != null &&
         currentHairState != null &&
@@ -84,6 +88,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
             age = value;
           });
         }),
+        _buildRadioListTile(
+          '두피 유형',
+          ['양호', '건성', '지성', '민감성', '지루성', '염증성', '비듬성', '탈모성'],
+          scalpType,
+          (value) {
+            setState(() {
+              scalpType = value;
+            });
+          },
+        ),
         _buildRadioListTile(
             '샴푸 사용 빈도', ['1일 1회', '1일 2회', '2일 1회', '1주일 1회'], shampooFrequency,
             (value) {
@@ -126,19 +140,21 @@ class _SurveyScreenState extends State<SurveyScreen> {
           child: Text('제출'),
           onPressed: () {
             if (isFormComplete()) {
-              String result = ''' 
-                  성별: $gender
-                  나이: $age
-                  샴푸 사용 빈도: $shampooFrequency
-                  펌 주기: $permFrequency
-                  염색 주기(자가 염색 포함): $dyeFrequency
-                  현재 모발 상태: $currentHairState
-                  현재 사용하고 있는 두피모발용 제품: ${hairProducts.join(', ')}
-                  맞춤 두피케어 제품사용을 희망하시나요?: ${wantCustomCare == true ? '예' : '아니오'}
-                  샴푸 구매시 중요시 고려하는 부분: $shampooPriority
-                ''';
+              Map<String, dynamic> surveyResults = {
+                'gender': gender,
+                'age': age,
+                'scalpType': scalpType,
+                'shampooFrequency': shampooFrequency,
+                'permFrequency': permFrequency,
+                'dyeFrequency': dyeFrequency,
+                'currentHairState': currentHairState,
+                'hairProducts': hairProducts,
+                'wantCustomCare': wantCustomCare,
+                'shampooPriority': shampooPriority,
+              };
+
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ResultScreen(resultText: result),
+                builder: (context) => ResultScreen(surveyData: surveyResults),
               ));
             } else {
               showDialog(

@@ -1,4 +1,5 @@
 {
     "git.ignoreLimitWarning": true,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "C:/Users/KIMTAEWON/development/projects/aiffelthon_hair/aiffelthon_hair/linux"
 }

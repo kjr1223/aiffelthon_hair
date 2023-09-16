@@ -2,7 +2,7 @@ import 'dart:math';
 
 // 코사인 유사도 or 유클리드 거리
 List<String> scalpType = ["양호", "건성", "지성", "민감성", "지루성", "염증성", "비듬성", "탈모성"];
-
+List<String> scalpCondition = ['미세각질', '피지과다', '모낭사이홍반', '모낭홍반농포', '비듬', '탈모'];
 // 기준 유형 라벨
 List<List<int>> expectedResults = [
   [0, 0, 0, 0, 0, 0], // 양호
@@ -45,5 +45,6 @@ String getMostSimilarScalpType(List<List<double>> predictResult) {
   }
   print("predictedLabels : $predictedLabels");
   print("mostSimilarIndex : ${expectedResults[mostSimilarIndex]}");
+
   return scalpType[mostSimilarIndex];
 }

@@ -1,7 +1,6 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:io';
 import 'dart:math';
+import 'package:aiffelthon_hair/sqlfite_database/analysis_result_model.dart';
 import 'package:aiffelthon_hair/sqlfite_database/save_analysis_result.dart';
 import 'package:flutter/material.dart';
 import 'package:aiffelthon_hair/ui_screen/imageLoader.dart';
@@ -20,7 +19,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   bool _isLoading = false; // 모델 연산 중 여부
   List<List<double>>? predictionsProbs; // 예측 확률 결과
   List<int>? predictedLabels; // 예측 라벨 결과(가장 높은 확률값들의 인덱스)
-  String? scalpType;
+  String scalpType = '';
   List<String> scalp_diseases = [
     '미세각질',
     '피지과다',
@@ -73,8 +72,25 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         getMostSimilarScalpType(predictionsProbs!); // 두피 유형 진단
                     _isLoading = false;
                   });
-                  // 데이터베이스에 분석결과 저장
-                  // await saveAnalysisResult(loadedImage, probabilities);
+
+                  List<int> predictedLabels = predictionsProbs!
+                      .map((row) => row.indexOf(row
+                          .reduce((curr, next) => curr > next ? curr : next)))
+                      .toList();
+                  List<String> scalpStage = ['양호', '경증', '중증도', '중증'];
+                  AnalysisResult analysisResult = AnalysisResult(
+                      imagePath: _image!.path,
+                      analysisDate: DateTime(DateTime.now().year,
+                          DateTime.now().month, DateTime.now().day),
+                      scalpType: scalpType,
+                      result1: scalpStage[predictedLabels[0]],
+                      result2: scalpStage[predictedLabels[1]],
+                      result3: scalpStage[predictedLabels[2]],
+                      result4: scalpStage[predictedLabels[3]],
+                      result5: scalpStage[predictedLabels[4]],
+                      result6: scalpStage[predictedLabels[5]]);
+                  //데이터베이스에 분석결과 저장
+                  await saveAnalysisResult(analysisResult);
                 }
               },
               child: const Text('두피 사진 불러오기'),

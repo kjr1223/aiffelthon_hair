@@ -28,7 +28,7 @@ class DatabaseHelper {
     CREATE TABLE analysis_results (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       image_path TEXT,
-      scalptype REAL,
+      scalp_type REAL,
       result_1 REAL,
       result_2 REAL,
       result_3 REAL,

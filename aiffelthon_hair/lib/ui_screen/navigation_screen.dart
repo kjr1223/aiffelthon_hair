@@ -102,8 +102,20 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   // 사용자가 네비게이션 바의 아이템을 탭할 때 호출되는 메서드입니다.
   void _onItemTapped(int index) {
-    // 'History' 탭이 선택되었을 때 Navigator 스택 초기화
-    if (index == 2) {
+    if (index == 2 && _selectedIndex != index) {
+      // HistoryScreen의 Navigator를 새로 생성
+      setState(() {
+        _widgetOptions[2] = Navigator(
+          key: _navigatorKeys[2],
+          onGenerateRoute: (route) =>
+              MaterialPageRoute(builder: (context) => HistoryScreen()),
+        );
+        print('HistoryScreen reload');
+      });
+    }
+
+    //HistoryScreen을 벗어날 때 Navigator 스택 초기화
+    if (_selectedIndex == 2 && index != 2) {
       _navigatorKeys[2].currentState?.popUntil((route) => route.isFirst);
     }
 
