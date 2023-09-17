@@ -1,20 +1,48 @@
 import 'package:aiffelthon_hair/firebase_auth/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
+import 'ui_screen/providers/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MaterialApp(
-    theme: ThemeData.light(),
-    darkTheme: ThemeData.dark(),
-    themeMode: ThemeMode.dark,
-    home: NavigationScreen(),
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return MaterialApp(
+      theme: ThemeData(
+        brightness:
+            themeProvider.isDarkMode ? Brightness.dark : Brightness.light,
+        primarySwatch: Colors.blue,
+        textTheme: TextTheme(
+          bodyText1: TextStyle(
+              fontSize: themeProvider.fontSize,
+              color: themeProvider.isDarkMode ? Colors.white : Colors.black),
+          bodyText2: TextStyle(
+              fontSize: themeProvider.fontSize,
+              color: themeProvider.isDarkMode ? Colors.white : Colors.black),
+          // 기타 TextStyle들도 여기에 추가할 수 있습니다.
+        ),
+        scaffoldBackgroundColor: themeProvider.backgroundColor,
+      ),
+      home: NavigationScreen(),
+    );
+  }
 }
 
 // class MyApp extends StatelessWidget {

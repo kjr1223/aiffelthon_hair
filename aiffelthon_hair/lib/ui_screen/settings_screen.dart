@@ -1,4 +1,5 @@
 import 'package:aiffelthon_hair/ui_screen/account_management_screen.dart.dart';
+import 'package:aiffelthon_hair/ui_screen/themedisplay.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -59,6 +60,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text('테마 및 디스플레이'),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ThemeDisplayScreen(),
+                ),
+              );
               // Navigate to Theme & Display screen
             },
           ),
