@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(
               fontSize: themeProvider.fontSize,
               color: themeProvider.isDarkMode ? Colors.white : Colors.black),
-          // 기타 TextStyle들도 여기에 추가할 수 있습니다.
         ),
         scaffoldBackgroundColor: themeProvider.backgroundColor,
       ),
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 // class MyApp extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {

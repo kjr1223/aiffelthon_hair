@@ -1,5 +1,7 @@
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class AccountManagementScreen extends StatefulWidget {
   @override
@@ -45,8 +47,19 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+
+    // 테마 정보에 따라 Text의 스타일을 설정합니다.
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? TextStyle(color: Colors.white)
+        : TextStyle(color: Colors.black);
+    Color scaffoldBackgroundColor =
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
-      appBar: AppBar(title: Text('계정관리')),
+      appBar: AppBar(title: Text('계정관리', style: titleStyle)),
+      backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
       body: ListView(
         children: [
           ListTile(

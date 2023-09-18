@@ -2,8 +2,10 @@ import 'package:aiffelthon_hair/ui_screen/home_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/analysis_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/history_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/board_screen.dart';
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:aiffelthon_hair/ui_screen/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -46,17 +48,21 @@ class _NavigationScreenState extends State<NavigationScreen> {
         onGenerateRoute: (route) =>
             MaterialPageRoute(builder: (context) => BoardScreen())),
     Navigator(
-        key: _navigatorKeys[4],
-        onGenerateRoute: (route) =>
-            MaterialPageRoute(builder: (context) => SettingsScreen())),
+      key: _navigatorKeys[4],
+      onGenerateRoute: (route) => MaterialPageRoute(
+          builder: (context) => SettingsScreen(navContext: context)),
+    )
   ];
 
   // 위젯의 UI를 구성합니다.
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('두피새싹'),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
       ),
       // 현재 선택된 탭에 해당하는 화면만 표시하고 나머지는 숨깁니다.
       body: Stack(

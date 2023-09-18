@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:aiffelthon_hair/sqlfite_database/load_analysis_result.dart';
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   @override
-  HistoryScreenState createState() => HistoryScreenState();
+  State<StatefulWidget> createState() => HistoryScreenState();
 }
 
 class HistoryScreenState extends State<HistoryScreen> {
@@ -53,29 +55,46 @@ class HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<HistoryItem>>(
-      future: loadHistoryData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          _historyItems = snapshot.data ?? [];
-          return ListView.builder(
-            itemCount: _historyItems.length,
-            itemBuilder: (context, index) {
-              final historyItem = _historyItems[index];
-              return HistoryListItem(
-                imagePath: historyItem.imagePath,
-                result: historyItem.formattedResult,
-                analysisDate: historyItem.analysisDate,
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+
+    // 테마 정보에 따라 Text의 스타일을 설정합니다.
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? TextStyle(color: Colors.white)
+        : TextStyle(color: Colors.black);
+    Color scaffoldBackgroundColor =
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
+
+    return Scaffold(
+        backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
+        appBar: AppBar(
+          title: Text('기록', style: titleStyle),
+          backgroundColor:
+              themeProvider.isDarkMode ? Colors.black : Colors.blue,
+        ),
+        body: FutureBuilder<List<HistoryItem>>(
+          future: loadHistoryData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              _historyItems = snapshot.data ?? [];
+              return ListView.builder(
+                itemCount: _historyItems.length,
+                itemBuilder: (context, index) {
+                  final historyItem = _historyItems[index];
+                  return HistoryListItem(
+                    imagePath: historyItem.imagePath,
+                    result: historyItem.formattedResult,
+                    analysisDate: historyItem.analysisDate,
+                  );
+                },
               );
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text("Error loading data"));
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error loading data"));
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
   }
 }
 

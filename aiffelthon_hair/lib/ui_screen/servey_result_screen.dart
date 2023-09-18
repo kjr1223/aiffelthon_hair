@@ -1,5 +1,7 @@
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -25,9 +27,21 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+
+    // 테마 정보에 따라 Text의 스타일을 설정합니다.
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? TextStyle(color: Colors.white)
+        : TextStyle(color: Colors.black);
+    Color scaffoldBackgroundColor =
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("문진 결과 및 상품 추천"),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
       ),
       body: ListView(
         children: [
@@ -36,19 +50,27 @@ class _ResultScreenState extends State<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("성별: ${widget.surveyData['gender']}"),
-                Text("나이: ${widget.surveyData['age']}"),
-                Text("두피 유형: ${widget.surveyData['scalpType']}"),
-                Text("샴푸 사용 빈도: ${widget.surveyData['shampooFrequency']}"),
-                Text("펌 주기: ${widget.surveyData['permFrequency']}"),
-                Text("염색 주기(자가 염색 포함): ${widget.surveyData['dyeFrequency']}"),
-                Text("현재 모발 상태: ${widget.surveyData['currentHairState']}"),
+                Text("성별: ${widget.surveyData['gender']}", style: titleStyle),
+                Text("나이: ${widget.surveyData['age']}", style: titleStyle),
+                Text("두피 유형: ${widget.surveyData['scalpType']}",
+                    style: titleStyle),
+                Text("샴푸 사용 빈도: ${widget.surveyData['shampooFrequency']}",
+                    style: titleStyle),
+                Text("펌 주기: ${widget.surveyData['permFrequency']}",
+                    style: titleStyle),
+                Text("염색 주기(자가 염색 포함): ${widget.surveyData['dyeFrequency']}",
+                    style: titleStyle),
+                Text("현재 모발 상태: ${widget.surveyData['currentHairState']}",
+                    style: titleStyle),
                 Text(
-                    "현재 사용하고 있는 두피모발용 제품: ${widget.surveyData['hairProducts'].join(', ')}"),
+                    "현재 사용하고 있는 두피모발용 제품: ${widget.surveyData['hairProducts'].join(', ')}",
+                    style: titleStyle),
                 Text(
-                    "맞춤 두피케어 제품사용을 희망하시나요?: ${widget.surveyData['wantCustomCare'] == true ? '예' : '아니오'}"),
+                    "맞춤 두피케어 제품사용을 희망하시나요?: ${widget.surveyData['wantCustomCare'] == true ? '예' : '아니오'}",
+                    style: titleStyle),
                 Text(
-                    "샴푸 구매시 중요시 고려하는 부분: ${widget.surveyData['shampooPriority']}"),
+                    "샴푸 구매시 중요시 고려하는 부분: ${widget.surveyData['shampooPriority']}",
+                    style: titleStyle),
               ],
             ),
           ),

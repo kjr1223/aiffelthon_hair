@@ -2,16 +2,29 @@ import 'dart:io';
 import 'dart:math';
 import 'package:aiffelthon_hair/sqlfite_database/analysis_result_model.dart';
 import 'package:aiffelthon_hair/sqlfite_database/save_analysis_result.dart';
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:aiffelthon_hair/ui_screen/imageLoader.dart';
 import 'package:aiffelthon_hair/ai/classifyer.dart';
 import 'package:aiffelthon_hair/scalp_type_analizer.dart';
+import 'package:provider/provider.dart';
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
+}
+
+class ThemeModel extends ChangeNotifier {
+  bool _isDarkModeOn = false;
+
+  bool get isDarkModeOn => _isDarkModeOn;
+
+  void toggleTheme() {
+    _isDarkModeOn = !_isDarkModeOn;
+    notifyListeners();
+  }
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
@@ -30,157 +43,171 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? TextStyle(color: Colors.white)
+        : TextStyle(color: Colors.black);
+    Color scaffoldBackgroundColor =
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (_image != null)
-            // 이미지 표시 영역
-            SizedBox(
-              width: screenWidth * 0.8,
-              height: screenHeight * 0.3,
-              child: Image.file(
-                _image!,
-                fit: BoxFit.cover,
-              ),
-            )
-          else
-            const Text('No image selected.'),
-          const SizedBox(height: 20),
-          Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                // 갤러리에서 이미지를 불러오기
-                final loadedImage = await loadImage();
-                if (loadedImage != null) {
-                  setState(() {
-                    _image = loadedImage;
-                    _isLoading = true;
-                  });
-
-                  // 예측 작업 수행
-                  final predictResult =
-                      await classifyPreprocessedImage(_image!);
-
-                  setState(() {
-                    predictionsProbs = predictResult;
-                    scalpType =
-                        getMostSimilarScalpType(predictionsProbs!); // 두피 유형 진단
-                    _isLoading = false;
-                  });
-
-                  List<int> predictedLabels = predictionsProbs!
-                      .map((row) => row.indexOf(row
-                          .reduce((curr, next) => curr > next ? curr : next)))
-                      .toList();
-                  List<String> scalpStage = ['양호', '경증', '중증도', '중증'];
-                  AnalysisResult analysisResult = AnalysisResult(
-                      imagePath: _image!.path,
-                      analysisDate: DateTime(DateTime.now().year,
-                          DateTime.now().month, DateTime.now().day),
-                      scalpType: scalpType,
-                      result1: scalpStage[predictedLabels[0]],
-                      result2: scalpStage[predictedLabels[1]],
-                      result3: scalpStage[predictedLabels[2]],
-                      result4: scalpStage[predictedLabels[3]],
-                      result5: scalpStage[predictedLabels[4]],
-                      result6: scalpStage[predictedLabels[5]]);
-                  //데이터베이스에 분석결과 저장
-                  await saveAnalysisResult(analysisResult);
-                }
-              },
-              child: const Text('두피 사진 불러오기'),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Center(
-              child: Column(
+    return Scaffold(
+        backgroundColor: scaffoldBackgroundColor, // 여기에서 backgroundColor 설정
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                'Scalp Condition Result:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              if (_isLoading) ...[
-                const CircularProgressIndicator(
-                  color: Colors.black87,
+              if (_image != null)
+                // 이미지 표시 영역
+                SizedBox(
+                  width: screenWidth * 0.8,
+                  height: screenHeight * 0.3,
+                  child: Image.file(
+                    _image!,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else
+                const Text('No image selected.'),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // 갤러리에서 이미지를 불러오기
+                    final loadedImage = await loadImage();
+                    if (loadedImage != null) {
+                      setState(() {
+                        _image = loadedImage;
+                        _isLoading = true;
+                      });
+
+                      // 예측 작업 수행
+                      final predictResult =
+                          await classifyPreprocessedImage(_image!);
+
+                      setState(() {
+                        predictionsProbs = predictResult;
+                        scalpType = getMostSimilarScalpType(
+                            predictionsProbs!); // 두피 유형 진단
+                        _isLoading = false;
+                      });
+
+                      List<int> predictedLabels = predictionsProbs!
+                          .map((row) => row.indexOf(row.reduce(
+                              (curr, next) => curr > next ? curr : next)))
+                          .toList();
+                      List<String> scalpStage = ['양호', '경증', '중증도', '중증'];
+                      AnalysisResult analysisResult = AnalysisResult(
+                          imagePath: _image!.path,
+                          analysisDate: DateTime(DateTime.now().year,
+                              DateTime.now().month, DateTime.now().day),
+                          scalpType: scalpType,
+                          result1: scalpStage[predictedLabels[0]],
+                          result2: scalpStage[predictedLabels[1]],
+                          result3: scalpStage[predictedLabels[2]],
+                          result4: scalpStage[predictedLabels[3]],
+                          result5: scalpStage[predictedLabels[4]],
+                          result6: scalpStage[predictedLabels[5]]);
+                      //데이터베이스에 분석결과 저장
+                      await saveAnalysisResult(analysisResult);
+                    }
+                  },
+                  child: const Text('두피 사진 불러오기'),
                 ),
-              ] else if (predictionsProbs != null) ...[
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Column(
+              ),
+              const SizedBox(height: 20),
+              Center(
+                  child: Column(
+                children: [
+                  const Text(
+                    'Scalp Condition Result:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  if (_isLoading) ...[
+                    const CircularProgressIndicator(
+                      color: Colors.black87,
+                    ),
+                  ] else if (predictionsProbs != null) ...[
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('카테고리'),
-                          Text('양호:'),
-                          Text('경증:'),
-                          Text('중증도:'),
-                          Text('중증:')
+                          const Column(
+                            children: [
+                              Text('카테고리'),
+                              Text('양호:'),
+                              Text('경증:'),
+                              Text('중증도:'),
+                              Text('중증:')
+                            ],
+                          ),
+                          for (int i = 0;
+                              i < predictionsProbs!.length;
+                              i++) ...[
+                            const SizedBox(width: 20),
+                            Column(
+                              children: [
+                                Text(scalp_diseases[i]),
+                                Text(
+                                    '${predictionsProbs![i][0].toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                        color: predictionsProbs![i][0] ==
+                                                predictionsProbs![i].reduce(max)
+                                            ? Colors.red
+                                            : Colors.black)),
+                                Text(
+                                    '${predictionsProbs![i][1].toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                        color: predictionsProbs![i][1] ==
+                                                predictionsProbs![i].reduce(max)
+                                            ? Colors.red
+                                            : Colors.black)),
+                                Text(
+                                    '${predictionsProbs![i][2].toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                        color: predictionsProbs![i][2] ==
+                                                predictionsProbs![i].reduce(max)
+                                            ? Colors.red
+                                            : Colors.black)),
+                                Text(
+                                    '${predictionsProbs![i][3].toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                        color: predictionsProbs![i][3] ==
+                                                predictionsProbs![i].reduce(max)
+                                            ? Colors.red
+                                            : Colors.black)),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
-                      for (int i = 0; i < predictionsProbs!.length; i++) ...[
-                        const SizedBox(width: 20),
-                        Column(
-                          children: [
-                            Text(scalp_diseases[i]),
-                            Text(
-                                '${predictionsProbs![i][0].toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: predictionsProbs![i][0] ==
-                                            predictionsProbs![i].reduce(max)
-                                        ? Colors.red
-                                        : Colors.black)),
-                            Text(
-                                '${predictionsProbs![i][1].toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: predictionsProbs![i][1] ==
-                                            predictionsProbs![i].reduce(max)
-                                        ? Colors.red
-                                        : Colors.black)),
-                            Text(
-                                '${predictionsProbs![i][2].toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: predictionsProbs![i][2] ==
-                                            predictionsProbs![i].reduce(max)
-                                        ? Colors.red
-                                        : Colors.black)),
-                            Text(
-                                '${predictionsProbs![i][3].toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: predictionsProbs![i][3] ==
-                                            predictionsProbs![i].reduce(max)
-                                        ? Colors.red
-                                        : Colors.black)),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  '가장 유사한 두피 유형:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  scalpType!,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ] else ...[
-                const Text('분석결과없음'),
-              ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      '가장 유사한 두피 유형:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      scalpType!,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ] else ...[
+                    const Text('분석결과없음'),
+                  ],
+                ],
+              )),
             ],
-          )),
-        ],
-      ),
-    );
+          ),
+        ));
   }
 }
 

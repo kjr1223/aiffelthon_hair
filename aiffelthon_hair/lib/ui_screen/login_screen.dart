@@ -1,7 +1,9 @@
 import 'package:aiffelthon_hair/firebase_auth/auth_service.dart';
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -33,17 +35,19 @@ class _LoginState extends State<LoginStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
       child: ListView(
         children: <Widget>[
           Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
+            padding: EdgeInsets.all(10),
+            child: Text(
               '두피 유형 검사',
               style: TextStyle(
-                color: Colors.blue,
+                color: themeProvider.isDarkMode ? Colors.white : Colors.blue,
                 fontWeight: FontWeight.w500,
                 fontSize: 30,
               ),
@@ -58,13 +62,17 @@ class _LoginState extends State<LoginStatefulWidget> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(10),
             child: TextField(
               controller: nameController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Email',
-              ),
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                  labelStyle: TextStyle(
+                    color: themeProvider.isDarkMode
+                        ? Colors.white70
+                        : Colors.black,
+                  )),
             ),
           ),
           Container(

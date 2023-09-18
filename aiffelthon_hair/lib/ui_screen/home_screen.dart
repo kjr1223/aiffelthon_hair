@@ -1,16 +1,40 @@
+import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'servey_result_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+      ChangeNotifierProvider(
+        create: (context) => ThemeModel(),
+        child: MyApp(),
+      ),
+    );
+
+class ThemeModel extends ChangeNotifier {
+  bool _isDarkModeOn = false;
+
+  bool get isDarkModeOn => _isDarkModeOn;
+
+  void toggleTheme() {
+    _isDarkModeOn = !_isDarkModeOn;
+    notifyListeners();
+  }
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Survey',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      title: 'Flutter Dark Mode Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       home: HomeScreen(),
     );
   }
@@ -18,16 +42,30 @@ class MyApp extends StatelessWidget {
 
 class HomeScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => HomeState();
+  State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-class HomeState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? TextStyle(color: Colors.white)
+        : TextStyle(color: Colors.black);
+    Color scaffoldBackgroundColor =
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
+      backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
       body: Center(
         child: ElevatedButton(
-          child: Text("문진 설문 시작"),
+          child: Text(
+            "문진 설문 시작",
+            style:
+                TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+          ),
           onPressed: () {
             Navigator.push(
               context,
@@ -74,8 +112,22 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider =
+        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+
+    // 테마 정보에 따라 Text의 스타일을 설정합니다.
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? TextStyle(color: Colors.white)
+        : TextStyle(color: Colors.black);
+    Color scaffoldBackgroundColor =
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
-      appBar: AppBar(title: Text("설문조사")),
+      backgroundColor: scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text("설문조사", style: titleStyle),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+      ),
       body: ListView(padding: EdgeInsets.all(16.0), children: [
         _buildRadioListTile('성별', ['남', '여'], gender, (value) {
           setState(() {
