@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => HistoryScreenState();
+  HistoryScreenState  createState() => HistoryScreenState();
 }
 
 class HistoryScreenState extends State<HistoryScreen> {
