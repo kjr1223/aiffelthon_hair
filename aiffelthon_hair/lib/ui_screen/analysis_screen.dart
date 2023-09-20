@@ -8,6 +8,8 @@ import 'package:aiffelthon_hair/ui_screen/imageLoader.dart';
 import 'package:aiffelthon_hair/ai/classifyer.dart';
 import 'package:aiffelthon_hair/scalp_type_analizer.dart';
 import 'package:provider/provider.dart';
+import 'package:aiffelthon_hair/ui_screen/microscope_widget.dart';
+// import 'package:aiffelthon_hair/flutter_usb_camera/example/lib/microscope_widget.dart';
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
@@ -65,7 +67,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               if (_image != null)
                 // 이미지 표시 영역
                 SizedBox(
-                  width: screenWidth * 0.8,
+                  width: screenWidth * 0.9,
                   height: screenHeight * 0.3,
                   child: Image.file(
                     _image!,
@@ -75,6 +77,42 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               else
                 const Text('No image selected.'),
               const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MicroscopeWidget(
+                          onImageCaptured: (imagePath) async {
+                            setState(() {
+                              _image = File(imagePath);
+                              _isLoading = true;
+                            });
+                            Navigator.pop(context);
+                            final predictResult =
+                                await classifyPreprocessedImage(_image!);
+
+                            setState(() {
+                              predictionsProbs = predictResult;
+                              scalpType =
+                                  getMostSimilarScalpType(predictionsProbs!);
+                              _isLoading = false;
+                            });
+
+                            List<int> predictedLabels = predictionsProbs!
+                                .map((row) => row.indexOf(row.reduce(
+                                    (curr, next) => curr > next ? curr : next)))
+                                .toList();
+
+                            // MicroscopeWidget 화면 종료
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text("두피 사진 촬영하기"),
+                ),
+              ),
               Center(
                 child: ElevatedButton(
                   onPressed: () async {

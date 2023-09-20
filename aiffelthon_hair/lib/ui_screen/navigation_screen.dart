@@ -60,10 +60,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('두피새싹'),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
-      ),
+      // appBar: AppBar(
+      //   title: Text('두피새싹'),
+      //   backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+      // ),
       // 현재 선택된 탭에 해당하는 화면만 표시하고 나머지는 숨깁니다.
       body: Stack(
         children: _widgetOptions.map((widget) {
