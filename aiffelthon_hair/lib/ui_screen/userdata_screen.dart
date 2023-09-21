@@ -26,7 +26,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
         title: Text('사용자 데이터', style: titleStyle),
         backgroundColor: themeProvider.isDarkMode
             ? Colors.black
-            : Colors.blue, // 배경색을 다크모드에 따라 변경
+            : Colors.green, // 배경색을 다크모드에 따라 변경
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),

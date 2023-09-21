@@ -24,7 +24,7 @@ class _BoardState extends State<BoardScreen> {
       backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
       appBar: AppBar(
         title: Text('게시판', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
       ),
     );
   }

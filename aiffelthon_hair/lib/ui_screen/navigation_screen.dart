@@ -100,7 +100,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         ],
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.black87,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Color.fromARGB(255, 65, 150, 44),
         onTap: _onItemTapped,
       ),
     );

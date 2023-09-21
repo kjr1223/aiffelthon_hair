@@ -58,7 +58,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        backgroundColor: scaffoldBackgroundColor, // 여기에서 backgroundColor 설정
+        backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
+        appBar: AppBar(
+          title: Text('결과', style: titleStyle),
+          backgroundColor:
+              themeProvider.isDarkMode ? Colors.black : Colors.green,
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

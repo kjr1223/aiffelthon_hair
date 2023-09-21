@@ -1,5 +1,8 @@
+import 'package:aiffelthon_hair/ui_screen/analysis_screen.dart';
+import 'package:aiffelthon_hair/ui_screen/history_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'servey_result_screen.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Dark Mode Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
@@ -47,10 +50,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> adImages = [
+    'https://create.co.kr/public_html/data/editor/2103/thumb-20210330103458_eccgsddt_755x1007.jpg',
+    'https://img.allurekorea.com/allure/2022/07/style_62d4f506f0c4e-700x700.jpg',
+    'https://www.miseenscene.com/kr/ko/resource/images/BRD/20220428/20220511_hairandscarp-detail_01.jpg',
+    'https://www.cmn.co.kr/webupload/ckeditor/images/20220124_170149_0403560.jpg',
+    'https://post-phinf.pstatic.net/MjAyMjAyMThfMTQ3/MDAxNjQ1MTU4OTg4MTg0.SWaYij7Pg_0KWCt_-x5ZqHDeXOCp_Dq24lkt5_nu7NEg.wrqULXE1MKa0aqb78My_hry1QkAiKaG31ytxXwfHT5og.JPEG/0.jpg?type=w800_q75',
+  ];
+  final List<String> shampooTypes = [
+    '양호 샴푸',
+    '건성 샴푸',
+    '지성 샴푸',
+    '민감성 샴푸',
+    '지루성 샴푸',
+    '염증성 샴푸',
+    '비듬성 샴푸',
+    '탈모성샴푸'
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final themeProvider =
-        Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     TextStyle titleStyle = themeProvider.isDarkMode
         ? TextStyle(color: Colors.white)
@@ -59,23 +79,128 @@ class _HomeScreenState extends State<HomeScreen> {
         themeProvider.isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
-      backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
-      body: Center(
-        child: ElevatedButton(
-          child: Text(
-            "문진 설문 시작",
-            style:
-                TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SurveyScreen()),
-            );
-          },
+        backgroundColor: scaffoldBackgroundColor,
+        appBar: AppBar(
+          title: Text('두피새싹', style: titleStyle),
+          backgroundColor:
+              themeProvider.isDarkMode ? Colors.black : Colors.green,
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 20.0),
+              Container(
+                height: 275.0,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: adImages.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(adImages[index]),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 50),
+              Column(
+                children: [
+                  Text('모든 제품 확인하기'),
+                  Container(
+                    height: 120, // Adjust the height as needed
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: shampooTypes.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Icon(Icons.water_drop,
+                                  size: 40), // Replace with your shampoo icon
+                              SizedBox(height: 10.0),
+                              Text(shampooTypes[index]),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 30.0),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 400.0,
+                      height: 100.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(primary: Colors.green),
+                        child: Text(
+                          "문진 설문 시작",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SurveyScreen()),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20.0), // 버튼 사이의 간격을 주기 위해 추가
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: 190.0,
+                          height: 200.0,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.green),
+                            ),
+                            child: Text("두피 분석하기"),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AnalysisScreen()),
+                              );
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: 190.0,
+                          height: 200.0,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.green),
+                            ),
+                            child: Text("내 기록"),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HistoryScreen()),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
 
@@ -127,108 +252,128 @@ class _SurveyScreenState extends State<SurveyScreen> {
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("설문조사", style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
       ),
-      body: ListView(padding: EdgeInsets.all(16.0), children: [
-        _buildRadioListTile('성별', ['남', '여'], gender, (value) {
-          setState(() {
-            gender = value;
-          });
-        }),
-        _buildRadioListTile(
-            '나이', ['10대', '20대', '30대', '40대', '50대', '60대 이상'], age, (value) {
-          setState(() {
-            age = value;
-          });
-        }),
-        _buildRadioListTile(
-          '두피 유형',
-          ['양호', '건성', '지성', '민감성', '지루성', '염증성', '비듬성', '탈모성'],
-          scalpType,
-          (value) {
-            setState(() {
-              scalpType = value;
-            });
-          },
-        ),
-        _buildRadioListTile(
-            '샴푸 사용 빈도', ['1일 1회', '1일 2회', '2일 1회', '1주일 1회'], shampooFrequency,
-            (value) {
-          setState(() {
-            shampooFrequency = value;
-          });
-        }),
-        _buildRadioListTile(
-            '펌 주기', ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'], permFrequency,
-            (value) {
-          setState(() {
-            permFrequency = value;
-          });
-        }),
-        _buildRadioListTile('염색 주기(자가 염색 포함)',
-            ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'], dyeFrequency, (value) {
-          setState(() {
-            dyeFrequency = value;
-          });
-        }),
-        _buildRadioListTile(
-            '현재 모발 상태',
-            ['자연 모발', '펌 모발', '염색 모발', '탈모 모발', '곱슬 모발', '기타'],
-            currentHairState, (value) {
-          setState(() {
-            currentHairState = value;
-          });
-        }),
-        _buildCheckboxList('현재 사용하고 있는 두피모발용 제품',
-            ['샴푸', '린스', '트리트먼트', '헤어에센스', '탈모 관련 제품', '기타']),
-        _buildYesNo('맞춤 두피케어 제품사용을 희망(선호) 하시나요?'),
-        _buildRadioListTile('샴푸 구매시 중요시 고려하는 부분은 무엇인가요?',
-            ['헹굼 후 느낌', '세정력', '향', '두피자극', '가격'], shampooPriority, (value) {
-          setState(() {
-            shampooPriority = value;
-          });
-        }),
-        SizedBox(height: 20),
-        ElevatedButton(
-          child: Text('제출'),
-          onPressed: () {
-            if (isFormComplete()) {
-              Map<String, dynamic> surveyResults = {
-                'gender': gender,
-                'age': age,
-                'scalpType': scalpType,
-                'shampooFrequency': shampooFrequency,
-                'permFrequency': permFrequency,
-                'dyeFrequency': dyeFrequency,
-                'currentHairState': currentHairState,
-                'hairProducts': hairProducts,
-                'wantCustomCare': wantCustomCare,
-                'shampooPriority': shampooPriority,
-              };
-
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ResultScreen(surveyData: surveyResults),
-              ));
-            } else {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('알림'),
-                  content: Text('모든 항목을 선택해주세요'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text('확인'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.all(16.0),
+              children: [
+                _buildRadioListTile('성별', ['남', '여'], gender, (value) {
+                  setState(() {
+                    gender = value;
+                  });
+                }),
+                _buildRadioListTile(
+                    '나이', ['10대', '20대', '30대', '40대', '50대', '60대 이상'], age,
+                    (value) {
+                  setState(() {
+                    age = value;
+                  });
+                }),
+                _buildRadioListTile(
+                  '두피 유형',
+                  ['양호', '건성', '지성', '민감성', '지루성', '염증성', '비듬성', '탈모성'],
+                  scalpType,
+                  (value) {
+                    setState(() {
+                      scalpType = value;
+                    });
+                  },
                 ),
-              );
-            }
-          },
-        ),
-      ]),
+                _buildRadioListTile(
+                    '샴푸 사용 빈도',
+                    ['1일 1회', '1일 2회', '2일 1회', '1주일 1회'],
+                    shampooFrequency, (value) {
+                  setState(() {
+                    shampooFrequency = value;
+                  });
+                }),
+                _buildRadioListTile(
+                    '펌 주기',
+                    ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'],
+                    permFrequency, (value) {
+                  setState(() {
+                    permFrequency = value;
+                  });
+                }),
+                _buildRadioListTile(
+                    '염색 주기(자가 염색 포함)',
+                    ['하지않음', '1~3회/연', '4~6회/연', '7회 이상/연'],
+                    dyeFrequency, (value) {
+                  setState(() {
+                    dyeFrequency = value;
+                  });
+                }),
+                _buildRadioListTile(
+                    '현재 모발 상태',
+                    ['자연 모발', '펌 모발', '염색 모발', '탈모 모발', '곱슬 모발', '기타'],
+                    currentHairState, (value) {
+                  setState(() {
+                    currentHairState = value;
+                  });
+                }),
+                _buildCheckboxList('현재 사용하고 있는 두피모발용 제품',
+                    ['샴푸', '린스', '트리트먼트', '헤어에센스', '탈모 관련 제품', '기타']),
+                _buildYesNo('맞춤 두피케어 제품사용을 희망(선호) 하시나요?'),
+                _buildRadioListTile(
+                    '샴푸 구매시 중요시 고려하는 부분은 무엇인가요?',
+                    ['헹굼 후 느낌', '세정력', '향', '두피자극', '가격'],
+                    shampooPriority, (value) {
+                  setState(() {
+                    shampooPriority = value;
+                  });
+                }),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                  ),
+                  child: Text('제출'),
+                  onPressed: () {
+                    if (isFormComplete()) {
+                      Map<String, dynamic> surveyResults = {
+                        'gender': gender,
+                        'age': age,
+                        'scalpType': scalpType,
+                        'shampooFrequency': shampooFrequency,
+                        'permFrequency': permFrequency,
+                        'dyeFrequency': dyeFrequency,
+                        'currentHairState': currentHairState,
+                        'hairProducts': hairProducts,
+                        'wantCustomCare': wantCustomCare,
+                        'shampooPriority': shampooPriority,
+                      };
+
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ResultScreen(surveyData: surveyResults),
+                      ));
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('알림'),
+                          content: Text('모든 항목을 선택해주세요'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('확인'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

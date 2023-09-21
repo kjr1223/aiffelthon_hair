@@ -16,7 +16,7 @@ class _ThemeDisplayScreenState extends State<ThemeDisplayScreen> {
         appBar: AppBar(
           title: Text('테마 및 디스플레이'),
           backgroundColor:
-              themeProvider.isDarkMode ? Colors.black : Colors.blue,
+              themeProvider.isDarkMode ? Colors.black : Colors.green,
         ),
         body: Container(
           color: themeProvider.isDarkMode ? Colors.black : Colors.white,

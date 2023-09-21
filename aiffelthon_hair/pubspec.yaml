@@ -13,6 +13,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  font_awesome_flutter: ^10.5.0
   tflite_flutter: ^0.10.1
   image: ^4.0.17
   image_picker: ^1.0.4

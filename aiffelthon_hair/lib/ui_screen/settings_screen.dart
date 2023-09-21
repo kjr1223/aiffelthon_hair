@@ -78,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
       appBar: AppBar(
         title: Text('환경설정', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
       ),
       body: ListView(
         children: [
@@ -149,8 +149,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     backgroundColor: scaffoldBackgroundColor,
                     appBar: AppBar(
                       title: Text('공지사항', style: titleStyle),
-                      backgroundColor:
-                          themeProvider.isDarkMode ? Colors.black : Colors.blue,
+                      backgroundColor: themeProvider.isDarkMode
+                          ? Colors.black
+                          : Colors.green,
                     ),
                     body: ListView(
                       children: [
@@ -180,8 +181,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     backgroundColor: scaffoldBackgroundColor,
                     appBar: AppBar(
                       title: Text('앱 정보 및 도움말', style: titleStyle),
-                      backgroundColor:
-                          themeProvider.isDarkMode ? Colors.black : Colors.blue,
+                      backgroundColor: themeProvider.isDarkMode
+                          ? Colors.black
+                          : Colors.green,
                     ),
                     body: ListView(
                       children: [
@@ -212,8 +214,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     backgroundColor: scaffoldBackgroundColor,
                     appBar: AppBar(
                       title: Text('결제 및 구독', style: titleStyle),
-                      backgroundColor:
-                          themeProvider.isDarkMode ? Colors.black : Colors.blue,
+                      backgroundColor: themeProvider.isDarkMode
+                          ? Colors.black
+                          : Colors.green,
                     ),
                     body: ListView(
                       children: [

@@ -58,8 +58,10 @@ class _AccountManagementScreenState extends State<AccountManagementScreen> {
         themeProvider.isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
-      appBar: AppBar(title: Text('계정관리', style: titleStyle)),
-      backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+      appBar: AppBar(
+        title: Text('게시판', style: titleStyle),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
+      ),
       body: ListView(
         children: [
           ListTile(

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   @override
-  HistoryScreenState  createState() => HistoryScreenState();
+  HistoryScreenState createState() => HistoryScreenState();
 }
 
 class HistoryScreenState extends State<HistoryScreen> {
@@ -70,7 +70,7 @@ class HistoryScreenState extends State<HistoryScreen> {
         appBar: AppBar(
           title: Text('기록', style: titleStyle),
           backgroundColor:
-              themeProvider.isDarkMode ? Colors.black : Colors.blue,
+              themeProvider.isDarkMode ? Colors.black : Colors.green,
         ),
         body: FutureBuilder<List<HistoryItem>>(
           future: loadHistoryData(),

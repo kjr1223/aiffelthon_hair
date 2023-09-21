@@ -40,7 +40,7 @@ class _NotificationSettingsScreenState
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text('알림설정', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.blue,
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
       ),
       body: ListView(
         children: [
