@@ -1,77 +1,74 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_usb_camera/flutter_usb_camera.dart';
-import 'package:flutter_usb_camera/flutter_usb_camera_platform_interface.dart';
+
+import 'package:aiffelthon_hair/flutter_uvc/lib/flutter_uvc.dart';
+import 'package:aiffelthon_hair/flutter_uvc/lib/usb_device.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 
 class MicroscopeWidget extends StatefulWidget {
-  // 이미지 경로 전달 콜백 함수
-  final Function(String imagePath)? onImageCaptured;
-  const MicroscopeWidget({Key? key, this.onImageCaptured}) : super(key: key);
+  const MicroscopeWidget({Key? key}) : super(key: key);
 
   @override
-  State<MicroscopeWidget> createState() => _MicroscopeWidgetState();
+  State<MicroscopeWidget> createState() => _MyAppState();
 }
 
-class _MicroscopeWidgetState extends State<MicroscopeWidget> {
-  String _platformVersion = '알 수 없음';
-  final _flutterUsbCameraPlugin = FlutterUsbCamera();
-  late StreamSubscription _usbCameraBus;
-  int deviceId = 0;
-  String logStr = "";
-  bool isShowLog = false;
-  bool isWorking = false;
-  bool isRecord = false;
-  bool isTaking = false;
-  int zoom = 0;
-  bool isOpened = false;
+class _MyAppState extends State<MicroscopeWidget> {
+  String _platformVersion = 'Unknown';
+  File? _imageFile;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    _usbCameraBus = _flutterUsbCameraPlugin.events.listen((event) {
-      if (event.event == USBCameraEvent.onUsbCameraChanged) {
-        deviceId = event.count ?? 0;
-        if (deviceId == 0) {
-          isWorking = false;
-          isRecord = false;
-          isTaking = false;
-          isOpened = false;
-          zoom = 0;
-        }
-        setState(() {});
-      } else if (event.event == USBCameraEvent.onLogChanged) {
-        setState(() {
-          logStr = event.logString ?? "";
-        });
-      }
-    });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _usbCameraBus.cancel();
-  }
-
-  // 플랫폼 메시지는 비동기적이므로 비동기 메소드에서 초기화합니다.
+  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
-    // 플랫폼 메시지가 실패할 수 있으므로 try/catch PlatformException을 사용합니다.
-    // 또한 메시지가 null을 반환할 가능성을 다룹니다.
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _flutterUsbCameraPlugin.getPlatformVersion() ?? '알 수 없는 플랫폼 버전';
+          await FlutterUvc.platformVersion ?? 'Unknown platform version';
     } on PlatformException {
-      platformVersion = '플랫폼 버전을 가져오지 못했습니다.';
+      platformVersion = 'Failed to get platform version.';
     }
 
-    // 위젯이 비어 있을 때 비동기 플랫폼 메시지가 트리에서 제거되었다면 완료된 응답을 폐기하고 상태를 업데이트하지 않고
-    // 응답을 폐기하려면 setState를 호출하지 않습니다.
+// 권한 확인 및 요청
+    final cameraPermissionStatus = await Permission.camera.request();
+    if (cameraPermissionStatus.isGranted) {
+      // 카메라 권한이 승인되었을 때만 초기화 및 사용 가능한 기능을 활성화합니다.
+      // 나머지 코드는 그대로 유지합니다.
+    } else {
+      // 사용자가 권한을 거부한 경우 처리할 로직을 추가하세요.
+    }
+    // try {
+    //   final String? path = await FlutterUvc.takePicture();
+    // } on PlatformException {
+    //   platformVersion = 'Failed to get picture path.';
+    // }
+
+    // try {
+    //   final deviceList = await FlutterUvc.deviceList;
+    //   print(deviceList);
+    // } on PlatformException {
+    //   print("Unable to get device list");
+    // }
+
+    // try {
+    //   final device = await FlutterUvc.device;
+    //   print(device?.productName ?? '');
+    // } on PlatformException {
+    //   print("Unable to get device.");
+    // }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
@@ -81,150 +78,115 @@ class _MicroscopeWidgetState extends State<MicroscopeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context);
+        return false;
+      },
       child: Scaffold(
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                        "장치: $deviceId  ${deviceId > 0 ? "연결됨" : "연결되지 않음"}  "),
-                    Text(
-                      "실행: ${isWorking ? "작동 중" : "작동 중이 아님"}  ",
-                      style: TextStyle(
-                          color: isWorking ? Colors.red : Colors.black),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                        onPressed: () async {
-                          if (isWorking) {
-                            return;
-                          }
-
-                          PermissionStatus status =
-                              await Permission.camera.request();
-                          if (status == PermissionStatus.granted) {
-                            setState(() {
-                              isWorking = true;
-                            });
-                            _flutterUsbCameraPlugin.startPreview(deviceId);
-                          }
-                        },
-                        child: const Text('작동 시작')),
-                    TextButton(
-                        onPressed: () {
-                          if (!isWorking) {
-                            return;
-                          }
-                          setState(() {
-                            isWorking = false;
-                          });
-                          _flutterUsbCameraPlugin.stopPreview(deviceId);
-                        },
-                        child: const Text('작동 중지')),
-                  ],
-                ),
-                Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 400,
-                    color: Colors.red.withOpacity(0.2),
-                    child: deviceId > 0
-                        ? AndroidView(
-                            viewType: deviceId.toString(),
-                          )
-                        : null,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  icon: Icon(
-                    Icons.camera_alt,
-                  ),
-                  label: Text('사진촬영'),
-                  onPressed: () async {
-                    if (isTaking || !isWorking) {
-                      return;
-                    }
-                    bool? isOpened =
-                        await _flutterUsbCameraPlugin.isCameraOpened(deviceId);
-                    if (isOpened == true) {
-                      PermissionStatus status =
-                          await Permission.storage.request();
-
-                      if (status == PermissionStatus.granted) {
-                        setState(() {
-                          isTaking = true;
-                        });
-                        _flutterUsbCameraPlugin
-                            .takePicture(deviceId)
-                            .then((value) {
-                          if (kDebugMode) {
-                            print("사진 촬영 성공: $value");
-                          }
-                          // 이미지 경로 전달 콜백 함수
-                          if (widget.onImageCaptured != null) {
-                            widget.onImageCaptured!(value!);
-                          }
-                        }).catchError((onError) {
-                          if (kDebugMode) {
-                            print("사진 촬영 실패: ${onError.toString}");
-                          }
-                        }).whenComplete(() {
-                          setState(() {
-                            isTaking = false;
-                          });
-                        });
-                      }
-                    }
-                  },
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 10.0, // 아래에서부터의 거리
-              left: 0,
-              right: 0,
-              child: Align(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.grey[400])),
-                  onPressed: () {
-                    setState(() {
-                      isShowLog = !isShowLog;
-                    });
-                  },
-                  child: Text(
-                    isShowLog ? '로그 숨기기' : '로그 표시',
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ),
+        appBar: AppBar(
+          title: const Text('현미경 촬영'),
+          backgroundColor: Colors.green,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text('Running on: $_platformVersion\n'),
+              const SizedBox(
+                width: 640,
+                height: 480,
+                child: AndroidView(viewType: "flutter_uvc_view"),
               ),
-            ),
-            isShowLog
-                ? Container(
-                    width: MediaQuery.of(context)
-                        .size
-                        .width, // Full width of the screen
-                    height: MediaQuery.of(context).size.height *
-                        0.8, // 80% of the screen height
-                    color: Colors.black.withOpacity(0.5),
-                    child: SingleChildScrollView(
-                      child: Text(logStr),
-                    ),
-                  )
-                : Container()
-          ],
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                ),
+                onPressed: () async {
+                  try {
+                    final res = await FlutterUvc.takePicture();
+                    setState(() {
+                      _imageFile = res;
+                    });
+
+                    // 사진을 촬영한 후 analysis_screen으로 돌아가면서 촬영한 사진을 결과로 전달합니다.
+                    Navigator.pop(context, _imageFile);
+                  } on PlatformException {
+                    print("Take picture error");
+                  }
+                },
+                child: const Text("사진 촬영"),
+              ),
+              const DialogDeviceList(),
+              if (_imageFile != null) Image.file(_imageFile!),
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class DialogDeviceList extends StatelessWidget {
+  const DialogDeviceList({Key? key}) : super(key: key);
+
+  Future<void> handleSelectDevice(context) async {
+    try {
+      final deviceList = await FlutterUvc.deviceList;
+      promptDeviceList(context, deviceList);
+    } on PlatformException {
+      print("Unable to get devices.");
+    }
+    return Future.value(null);
+  }
+
+  Future<void> promptDeviceList(
+    BuildContext context,
+    List<UsbDevice> deviceList,
+  ) async {
+    final selectedDevice = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text("Select device"),
+          children: deviceList
+              .map(
+                (device) => SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context, device);
+                  },
+                  child: Column(
+                    children: [
+                      Text(device.productName ?? ''),
+                      Text(device.deviceName),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
+    try {
+      final res = await FlutterUvc.selectDevice(selectedDevice);
+      if (res) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Device selected."),
+          ),
+        );
+      }
+    } on PlatformException {
+      print("Unable to select devices.");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      child: const Text("Select device"),
+      onPressed: () => handleSelectDevice(context),
     );
   }
 }

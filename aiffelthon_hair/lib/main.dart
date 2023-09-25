@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: themeProvider.backgroundColor,
       ),
-      home: NavigationScreen(onSwitchTab: (index) {}),
+      home: const NavigationScreen(),
     );
   }
 }

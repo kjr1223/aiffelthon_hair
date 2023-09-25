@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class AnalysisResult {
   final String imagePath;
   final DateTime analysisDate;
@@ -25,7 +27,7 @@ class AnalysisResult {
   Map<String, dynamic> toMap() {
     return {
       'image_path': imagePath,
-      'analysis_date': analysisDate.toIso8601String(),
+      'analysis_date': DateFormat('yyyy-MM-dd').format(analysisDate),
       'scalp_type': scalpType, // Convert to string for storage
       'result_1': result1,
       'result_2': result2,

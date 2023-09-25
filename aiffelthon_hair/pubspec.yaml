@@ -30,9 +30,9 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   provider: ^6.0.5
   permission_handler: ^11.0.0
-  flutter_usb_camera:
-    path: lib/flutter_usb_camera/
-
+  flutter_uvc:
+    path: lib/flutter_uvc/
+  intl: ^0.18.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

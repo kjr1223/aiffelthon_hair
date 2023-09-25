@@ -1,13 +1,7 @@
-import 'package:aiffelthon_hair/ui_screen/analysis_screen.dart';
-import 'package:aiffelthon_hair/ui_screen/history_screen.dart';
-import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'servey_result_screen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 //void main() => runApp(
 //      ChangeNotifierProvider(
@@ -16,41 +10,42 @@ import 'dart:convert';
 //      ),
 //    );
 
-class ThemeProvider extends ChangeNotifier {
-  bool _isDarkModeOn = false;
+// class ThemeProvider extends ChangeNotifier {
+//   bool _isDarkModeOn = false;
 
-  bool get isDarkModeOn => _isDarkModeOn;
+//   bool get isDarkModeOn => _isDarkModeOn;
 
-  void toggleTheme() {
-    _isDarkModeOn = !_isDarkModeOn;
-    notifyListeners();
-  }
-}
+//   void toggleTheme() {
+//     _isDarkModeOn = !_isDarkModeOn;
+//     notifyListeners();
+//   }
+// }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Dark Mode Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      home: NavigationScreen(onSwitchTab: (index) {
-        print("Switched to tab: $index");
-      }),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: 'Flutter Dark Mode Demo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.green,
+//         brightness: Brightness.light,
+//       ),
+//       darkTheme: ThemeData(
+//         brightness: Brightness.dark,
+//       ),
+//       home: const NavigationScreen(),
+//     );
+//   }
+// }
 
 class HomeScreen extends StatefulWidget {
-  final Function(int) onSwitchTab;
+  // Home 화면에서 Analysis,History 화면으로 네비게이션 전환을 위한 콜백함수
+  final VoidCallback onSwitchAnalysisTab;
+  final VoidCallback onSwitchHistoryTab;
 
-  HomeScreen({required this.onSwitchTab});
+  HomeScreen(
+      {required this.onSwitchAnalysisTab, required this.onSwitchHistoryTab});
 
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
@@ -79,23 +74,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    TextStyle titleStyle = themeProvider.isDarkModeOn
-        ? TextStyle(color: Colors.white)
-        : TextStyle(color: Colors.black);
+    TextStyle titleStyle = themeProvider.isDarkMode
+        ? const TextStyle(color: Colors.white)
+        : const TextStyle(color: Colors.black);
     Color scaffoldBackgroundColor =
-        themeProvider.isDarkModeOn ? Colors.black : Colors.white;
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
         backgroundColor: scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text('두피새싹', style: titleStyle),
           backgroundColor:
-              themeProvider.isDarkModeOn ? Colors.black : Colors.green,
+              themeProvider.isDarkMode ? Colors.black : Colors.green,
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
                 height: 275.0,
                 child: ListView.builder(
@@ -109,10 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Column(
                 children: [
-                  Text('모든 제품 확인하기'),
+                  const Text('모든 제품 확인하기'),
                   Container(
                     height: 120, // Adjust the height as needed
                     child: ListView.builder(
@@ -123,9 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              Icon(Icons.water_drop,
+                              const Icon(Icons.water_drop,
                                   size: 40), // Replace with your shampoo icon
-                              SizedBox(height: 10.0),
+                              const SizedBox(height: 10.0),
                               Text(shampooTypes[index]),
                             ],
                           ),
@@ -136,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(top: 30.0),
+                padding: const EdgeInsets.only(top: 30.0),
                 child: Column(
                   children: [
                     Container(
@@ -183,12 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             onPressed: () {
-                              widget.onSwitchTab(1);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AnalysisScreen()),
-                              );
+                              widget.onSwitchAnalysisTab();
                             },
                           ),
                         ),
@@ -211,12 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             onPressed: () {
-                              widget.onSwitchTab(2);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HistoryScreen()),
-                              );
+                              widget.onSwitchHistoryTab();
                             },
                           ),
                         ),
@@ -269,18 +254,17 @@ class _SurveyScreenState extends State<SurveyScreen> {
         Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
 
     // 테마 정보에 따라 Text의 스타일을 설정합니다.
-    TextStyle titleStyle = themeProvider.isDarkModeOn
+    TextStyle titleStyle = themeProvider.isDarkMode
         ? TextStyle(color: Colors.white)
         : TextStyle(color: Colors.black);
     Color scaffoldBackgroundColor =
-        themeProvider.isDarkModeOn ? Colors.black : Colors.white;
+        themeProvider.isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("설문조사", style: titleStyle),
-        backgroundColor:
-            themeProvider.isDarkModeOn ? Colors.black : Colors.green,
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
       ),
       body: Column(
         children: [

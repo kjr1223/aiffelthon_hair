@@ -26,7 +26,7 @@ class AuthenticationWrapper extends StatelessWidget {
           } else {
             // 사용자가 로그인 상태일 경우 메인 화면으로 이동
             print('(authentication) 메인화면으로 이동');
-            return NavigationScreen(onSwitchTab: (index) {});
+            return NavigationScreen();
           }
         }
       },

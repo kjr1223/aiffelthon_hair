@@ -12,30 +12,6 @@ class HistoryScreen extends StatefulWidget {
 class HistoryScreenState extends State<HistoryScreen> {
   List<HistoryItem> _historyItems = []; // 데이터베이스에서 불러온 항목을 저장할 리스트
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   loadHistoryData();
-  // }
-
-  // void loadHistoryData() async {
-  //   final results = await getAnalysisResults();
-  //   setState(() {
-  //     _historyItems = results
-  //         .map((result) => HistoryItem(
-  //               imagePath: result['image_path'],
-  //               analysisDate: result['analysis_date'],
-  //               scalpType: result['scalp_type'].toString(),
-  //               result1: result['result_1'].toString(),
-  //               result2: result['result_2'].toString(),
-  //               result3: result['result_3'].toString(),
-  //               result4: result['result_4'].toString(),
-  //               result5: result['result_5'].toString(),
-  //               result6: result['result_6'].toString(),
-  //             ))
-  //         .toList();
-  //   });
-  // }
   Future<List<HistoryItem>> loadHistoryData() async {
     final results = await getAnalysisResults();
     return results

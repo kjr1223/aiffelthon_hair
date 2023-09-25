@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NavigationScreen extends StatefulWidget {
-  final Function(int) onSwitchTab;
-
-  const NavigationScreen({Key? key, required this.onSwitchTab})
-      : super(key: key);
+  const NavigationScreen({super.key});
 
   @override
   _NavigationScreenState createState() => _NavigationScreenState();
@@ -35,7 +32,19 @@ class _NavigationScreenState extends State<NavigationScreen> {
       Navigator(
         key: _navigatorKeys[0],
         onGenerateRoute: (route) => MaterialPageRoute(
-            builder: (context) => HomeScreen(onSwitchTab: widget.onSwitchTab)),
+            builder: (context) => HomeScreen(
+                  // 인덱스 업데이트 콜백 함수 전달
+                  onSwitchAnalysisTab: () {
+                    setState(() {
+                      _selectedIndex = 1;
+                    });
+                  },
+                  onSwitchHistoryTab: () {
+                    setState(() {
+                      _selectedIndex = 2;
+                    });
+                  },
+                )),
       ),
       Navigator(
         key: _navigatorKeys[1],
