@@ -1,5 +1,6 @@
 import 'package:aiffelthon_hair/ui_screen/analysis_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/history_screen.dart';
+import 'package:aiffelthon_hair/ui_screen/navigation_screen.dart';
 import 'package:aiffelthon_hair/ui_screen/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,14 +9,14 @@ import 'servey_result_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() => runApp(
-      ChangeNotifierProvider(
-        create: (context) => ThemeModel(),
-        child: MyApp(),
-      ),
-    );
+//void main() => runApp(
+//      ChangeNotifierProvider(
+//        create: (context) => ThemeProvider(),
+//        child: MyApp(),
+//      ),
+//    );
 
-class ThemeModel extends ChangeNotifier {
+class ThemeProvider extends ChangeNotifier {
   bool _isDarkModeOn = false;
 
   bool get isDarkModeOn => _isDarkModeOn;
@@ -39,12 +40,18 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: HomeScreen(),
+      home: NavigationScreen(onSwitchTab: (index) {
+        print("Switched to tab: $index");
+      }),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+  final Function(int) onSwitchTab;
+
+  HomeScreen({required this.onSwitchTab});
+
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
 }
@@ -72,18 +79,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    TextStyle titleStyle = themeProvider.isDarkMode
+    TextStyle titleStyle = themeProvider.isDarkModeOn
         ? TextStyle(color: Colors.white)
         : TextStyle(color: Colors.black);
     Color scaffoldBackgroundColor =
-        themeProvider.isDarkMode ? Colors.black : Colors.white;
+        themeProvider.isDarkModeOn ? Colors.black : Colors.white;
 
     return Scaffold(
         backgroundColor: scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text('두피새싹', style: titleStyle),
           backgroundColor:
-              themeProvider.isDarkMode ? Colors.black : Colors.green,
+              themeProvider.isDarkModeOn ? Colors.black : Colors.green,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -165,8 +172,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.green),
                             ),
-                            child: Text("두피 분석하기"),
+                            child: Text(
+                              "두피 분석하기",
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .color,
+                                fontSize: 15.0,
+                              ),
+                            ),
                             onPressed: () {
+                              widget.onSwitchTab(1);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -183,8 +200,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.green),
                             ),
-                            child: Text("내 기록"),
+                            child: Text(
+                              "내 기록",
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .color,
+                                fontSize: 15.0,
+                              ),
+                            ),
                             onPressed: () {
+                              widget.onSwitchTab(2);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -242,17 +269,18 @@ class _SurveyScreenState extends State<SurveyScreen> {
         Provider.of<ThemeProvider>(context); // ThemeProvider 상태 가져오기
 
     // 테마 정보에 따라 Text의 스타일을 설정합니다.
-    TextStyle titleStyle = themeProvider.isDarkMode
+    TextStyle titleStyle = themeProvider.isDarkModeOn
         ? TextStyle(color: Colors.white)
         : TextStyle(color: Colors.black);
     Color scaffoldBackgroundColor =
-        themeProvider.isDarkMode ? Colors.black : Colors.white;
+        themeProvider.isDarkModeOn ? Colors.black : Colors.white;
 
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("설문조사", style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
+        backgroundColor:
+            themeProvider.isDarkModeOn ? Colors.black : Colors.green,
       ),
       body: Column(
         children: [

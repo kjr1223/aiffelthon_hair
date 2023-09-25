@@ -84,6 +84,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                  ),
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -120,6 +123,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               ),
               Center(
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                  ),
                   onPressed: () async {
                     // 갤러리에서 이미지를 불러오기
                     final loadedImage = await loadImage();
