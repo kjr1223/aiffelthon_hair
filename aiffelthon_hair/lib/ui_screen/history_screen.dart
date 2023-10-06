@@ -44,9 +44,15 @@ class HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
         backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
         appBar: AppBar(
-          title: Text('기록', style: titleStyle),
+          title: Text(
+            '기록',
+            style: TextStyle(
+              fontFamily: 'DoHyeonRegular',
+              color: Colors.green,
+            ),
+          ),
           backgroundColor:
-              themeProvider.isDarkMode ? Colors.black : Colors.green,
+              themeProvider.isDarkMode ? Colors.black : Colors.white,
         ),
         body: FutureBuilder<List<HistoryItem>>(
           future: loadHistoryData(),

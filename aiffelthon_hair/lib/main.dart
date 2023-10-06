@@ -31,9 +31,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
           bodyText1: TextStyle(
+              fontFamily: 'DoHyeonRegular',
               fontSize: themeProvider.fontSize,
               color: themeProvider.isDarkMode ? Colors.white : Colors.black),
           bodyText2: TextStyle(
+              fontFamily: 'DoHyeonRegular',
               fontSize: themeProvider.fontSize,
               color: themeProvider.isDarkMode ? Colors.white : Colors.black),
         ),

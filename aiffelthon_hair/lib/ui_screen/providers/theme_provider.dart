@@ -22,32 +22,30 @@ class ThemeProvider with ChangeNotifier {
   ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primarySwatch: Colors.blue,
+    textTheme: TextTheme(
+      bodyText1: TextStyle(
+        fontSize: 14, // 기본 폰트 크기를 여기에 설정
+        color: Colors.black, // 기본 텍스트 색상을 여기에 설정
+        fontFamily: 'DoHyeonRegular', // 원하는 폰트 이름
+      ),
+      // 다른 텍스트 스타일도 필요한 경우 여기에 추가
+    ),
+    scaffoldBackgroundColor: Colors.white, // 기본 배경색을 여기에 설정
   );
 
   ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primarySwatch: Colors.blue,
+    textTheme: TextTheme(
+      bodyText1: TextStyle(
+        fontSize: 14, // 기본 폰트 크기를 여기에 설정
+        color: Colors.white, // 기본 텍스트 색상을 여기에 설정
+        fontFamily: 'DoHyeonRegular', // 원하는 폰트 이름
+      ),
+      // 다른 텍스트 스타일도 필요한 경우 여기에 추가
+    ),
+    scaffoldBackgroundColor: Colors.black, // 어두운 모드의 기본 배경색을 여기에 설정
   );
-
-  // 현재 설정된 배경색을 반환합니다.
-  Color get backgroundColor => _backgroundColor;
-
-  // 앱의 전체 밝기를 저장하는 변수. 초기 값은 밝음(Brightness.light)입니다.
-  Brightness _brightness = Brightness.light;
-
-  // 현재 설정된 밝기를 반환합니다.
-  Brightness get appBrightness => _brightness;
-
-  // 밝기를 전환하는 메서드. 밝기가 밝은 상태라면 어두운 상태로, 어두운 상태라면 밝은 상태로 전환합니다.
-  void toggleBrightness() {
-    if (_brightness == Brightness.light) {
-      _brightness = Brightness.dark;
-    } else {
-      _brightness = Brightness.light;
-    }
-    // 상태 변경을 알리므로써 위젯트리의 관련 부분이 재빌드됩니다.
-    notifyListeners();
-  }
 
   // 어두운 모드의 활성화 상태를 전환하는 메서드.
   void toggleDarkMode() {
@@ -63,6 +61,7 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Color get backgroundColor => _backgroundColor;
   // 배경색을 설정하는 메서드.
   void setBackgroundColor(Color color) {
     _backgroundColor = color;

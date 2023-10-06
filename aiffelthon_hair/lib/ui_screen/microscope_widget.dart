@@ -85,8 +85,21 @@ class _MyAppState extends State<MicroscopeWidget> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('현미경 촬영'),
-          backgroundColor: Colors.green,
+          title: const Text(
+            '현미경 촬영',
+            style: TextStyle(fontFamily: 'DoHyeonRegular', color: Colors.green),
+          ),
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back, // 뒤로 가기 아이콘
+              color: Colors.green, // 아이콘 색상 설정
+            ),
+            onPressed: () {
+              // 뒤로 가기 버튼 눌렀을 때 동작 설정
+              Navigator.of(context).pop();
+            },
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -99,7 +112,10 @@ class _MyAppState extends State<MicroscopeWidget> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  primary: Colors.white, // 배경색
+                  onPrimary: Colors.green, // 텍스트 색상
+                  side:
+                      BorderSide(color: Colors.green, width: 2.0), // 테두리 색상과 너비
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),

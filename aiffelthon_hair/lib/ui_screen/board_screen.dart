@@ -23,8 +23,11 @@ class _BoardState extends State<BoardScreen> {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
       appBar: AppBar(
-        title: Text('게시판', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
+        title: Text(
+          '게시판',
+          style: TextStyle(fontFamily: 'DoHyeonRegular', color: Colors.green),
+        ),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.white,
       ),
     );
   }

@@ -31,16 +31,29 @@ class _NotificationSettingsScreenState
 
     // 테마 정보에 따라 Text의 스타일을 설정합니다.
     TextStyle titleStyle = themeProvider.isDarkMode
-        ? TextStyle(color: Colors.white)
-        : TextStyle(color: Colors.black);
+        ? TextStyle(color: Colors.white, fontFamily: 'DoHyeonRegular')
+        : TextStyle(color: Colors.black, fontFamily: 'DoHyeonRegular');
     Color scaffoldBackgroundColor =
         themeProvider.isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('알림설정', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
+        title: Text(
+          '알림설정',
+          style: TextStyle(fontFamily: 'DoHyeonRegular', color: Colors.green),
+        ),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back, // 뒤로 가기 아이콘
+            color: Colors.green, // 아이콘 색상 설정
+          ),
+          onPressed: () {
+            // 뒤로 가기 버튼 눌렀을 때 동작 설정
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: ListView(
         children: [

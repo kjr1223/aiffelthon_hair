@@ -75,8 +75,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     TextStyle titleStyle = themeProvider.isDarkMode
-        ? TextStyle(color: Colors.white)
-        : TextStyle(color: Colors.black);
+        ? TextStyle(color: Colors.white, fontFamily: 'DoHyeonRegular')
+        : TextStyle(color: Colors.black, fontFamily: 'DoHyeonRegular');
     Color scaffoldBackgroundColor =
         themeProvider.isDarkMode ? Colors.black : Colors.white;
 
@@ -86,8 +86,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('결과', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
+        title: Text(
+          '결과',
+          style: TextStyle(
+            fontFamily: 'DoHyeonRegular',
+            color: Colors.green,
+          ),
+        ),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.white,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -134,7 +140,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       await processAndDisplayImage(result);
                     }
                   },
-                  child: Text("두피 사진 촬영하기"),
+                  child: Text(
+                    "두피 사진 촬영하기",
+                    style: TextStyle(
+                      fontFamily: 'DoHyeonRegular',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -150,7 +161,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       await processAndDisplayImage(loadedImage);
                     }
                   },
-                  child: const Text('두피 사진 불러오기'),
+                  child: const Text('두피 사진 불러오기',
+                      style: TextStyle(fontFamily: 'DoHyeonRegular')),
                 ),
               ),
               const SizedBox(height: 20),

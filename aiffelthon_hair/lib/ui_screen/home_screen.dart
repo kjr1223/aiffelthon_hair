@@ -3,42 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'servey_result_screen.dart';
 
-//void main() => runApp(
-//      ChangeNotifierProvider(
-//        create: (context) => ThemeProvider(),
-//        child: MyApp(),
-//      ),
-//    );
-
-// class ThemeProvider extends ChangeNotifier {
-//   bool _isDarkModeOn = false;
-
-//   bool get isDarkModeOn => _isDarkModeOn;
-
-//   void toggleTheme() {
-//     _isDarkModeOn = !_isDarkModeOn;
-//     notifyListeners();
-//   }
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'Flutter Dark Mode Demo',
-//       theme: ThemeData(
-//         primarySwatch: Colors.green,
-//         brightness: Brightness.light,
-//       ),
-//       darkTheme: ThemeData(
-//         brightness: Brightness.dark,
-//       ),
-//       home: const NavigationScreen(),
-//     );
-//   }
-// }
-
 class HomeScreen extends StatefulWidget {
   // Home 화면에서 Analysis,History 화면으로 네비게이션 전환을 위한 콜백함수
   final VoidCallback onSwitchAnalysisTab;
@@ -69,6 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
     '비듬성 샴푸',
     '탈모성샴푸'
   ];
+  final List<String> shampooTypeImages = [
+    'shampoo1.png',
+    'shampoo2.png',
+    'shampoo3.png',
+    'shampoo7.png',
+    'shampoo5.png',
+    'shampoo6.png',
+    'shampoo4.png',
+    'shampoo8.png'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +57,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         backgroundColor: scaffoldBackgroundColor,
         appBar: AppBar(
-          title: Text('두피새싹', style: titleStyle),
+          title: Row(
+            children: [
+              Text(
+                '두피새싹',
+                style: TextStyle(
+                  fontFamily: 'DoHyeonRegular',
+                  fontSize: 30.0,
+                  color: Colors.green,
+                ),
+              ),
+              SizedBox(width: 5.0), // 텍스트와 이모티콘 사이의 간격 조정
+              Image.asset(
+                'assets/images/fresh.png', // 이미지 파일 경로를 설정하세요.
+                width: 30.0, // 이미지의 너비 조정
+                height: 30.0, // 이미지의 높이 조정
+              ),
+            ],
+          ),
           backgroundColor:
-              themeProvider.isDarkMode ? Colors.black : Colors.green,
+              themeProvider.isDarkMode ? Colors.black : Colors.white,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -107,7 +98,13 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 50),
               Column(
                 children: [
-                  const Text('모든 제품 확인하기'),
+                  const Text(
+                    '모든 제품 확인하기',
+                    style: TextStyle(
+                      fontFamily: 'DoHyeonRegular',
+                      color: Colors.black,
+                    ),
+                  ),
                   Container(
                     height: 120, // Adjust the height as needed
                     child: ListView.builder(
@@ -118,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              const Icon(Icons.water_drop,
-                                  size: 40), // Replace with your shampoo icon
+                              Image.asset(
+                                  'assets/images/${shampooTypeImages[index]}'), // Replace with your shampoo icon
                               const SizedBox(height: 10.0),
                               Text(shampooTypes[index]),
                             ],
@@ -138,12 +135,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 400.0,
                       height: 100.0,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.green),
-                        child: Text(
-                          "문진 설문 시작",
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1!.color,
-                            fontSize: 20.0,
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white, // 버튼의 배경색을 투명으로 설정
+                          onPrimary: Colors.green, // 버튼의 텍스트 색상 설정
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: Colors.green,
+                                width: 2.0), // 테두리 색상과 너비 설정
+                            borderRadius:
+                                BorderRadius.circular(8.0), // 버튼의 모서리 둥글기 설정
                           ),
                         ),
                         onPressed: () {
@@ -153,6 +153,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder: (context) => SurveyScreen()),
                           );
                         },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 0.5, top: 0.5),
+                              child: Text(
+                                "문진 설문 시작",
+                                style: TextStyle(
+                                  fontFamily: 'DoHyeonRegular',
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Image.asset(
+                                'assets/images/servey.gif', // 이미지 파일 경로를 설정하세요.
+                                width: 80.0, // 이미지의 너비 설정
+                                height: 80.0, // 이미지의 높이 설정
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 20.0), // 버튼 사이의 간격을 주기 위해 추가
@@ -163,19 +188,47 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 190.0,
                           height: 200.0,
                           child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.green),
-                            ),
-                            child: Text(
-                              "두피 분석하기",
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .color,
-                                fontSize: 15.0,
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              onPrimary: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                side:
+                                    BorderSide(color: Colors.green, width: 2.0),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
+                            ),
+                            child: Stack(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 0, top: 10.0),
+                                      child: Text(
+                                        "두피 분석하기       ",
+                                        style: TextStyle(
+                                          fontFamily: 'DoHyeonRegular',
+                                          color: Colors.black,
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    child: Image.asset(
+                                      'assets/images/analysis.gif',
+                                      width: 80.0,
+                                      height: 130.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             onPressed: () {
                               widget.onSwitchAnalysisTab();
@@ -186,19 +239,49 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 190.0,
                           height: 200.0,
                           child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.green),
-                            ),
-                            child: Text(
-                              "내 기록",
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .color,
-                                fontSize: 15.0,
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white, // 버튼의 배경색을 투명으로 설정
+                              onPrimary: Colors.green, // 버튼의 텍스트 및 테두리 색상 설정
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Colors.green,
+                                    width: 2.0), // 테두리 색상과 너비 설정
+                                borderRadius: BorderRadius.circular(
+                                    8.0), // 버튼의 모서리 둥글기 설정
                               ),
+                            ),
+                            child: Stack(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 0, top: 10.0),
+                                      child: Text(
+                                        "내 기록                 ",
+                                        style: TextStyle(
+                                          fontFamily: 'DoHyeonRegular',
+                                          color: Colors.black,
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    child: Image.asset(
+                                      'assets/images/history.gif', // 이미지 파일 경로를 설정하세요.
+                                      width: 80.0,
+                                      height: 130.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             onPressed: () {
                               widget.onSwitchHistoryTab();
@@ -263,7 +346,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text("설문조사", style: titleStyle),
+        title: Text("설문조사",
+            style: TextStyle(
+              fontFamily: 'DoHyeonRegular',
+            )),
         backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
       ),
       body: Column(
@@ -342,7 +428,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   style: ElevatedButton.styleFrom(
                     primary: Colors.green,
                   ),
-                  child: Text('제출'),
+                  child: Text(
+                    "제출",
+                    style: TextStyle(
+                      fontFamily: 'DoHyeonRegular',
+                      fontSize: 18.0,
+                    ),
+                  ),
                   onPressed: () {
                     if (isFormComplete()) {
                       Map<String, dynamic> surveyResults = {
@@ -366,11 +458,20 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('알림'),
-                          content: Text('모든 항목을 선택해주세요'),
+                          title: Text(
+                            '알림',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                          content: Text(
+                            '모든 항목을 선택해주세요',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('확인'),
+                              child: Text(
+                                '확인',
+                                style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                              ),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },

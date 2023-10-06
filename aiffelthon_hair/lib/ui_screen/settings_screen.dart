@@ -77,14 +77,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
       appBar: AppBar(
-        title: Text('환경설정', style: titleStyle),
-        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.green,
+        title: Text(
+          '환경설정',
+          style: TextStyle(fontFamily: 'DoHyeonRegular', color: Colors.green),
+        ),
+        backgroundColor: themeProvider.isDarkMode ? Colors.black : Colors.white,
       ),
       body: ListView(
         children: [
           ListTile(
             // tileColor: tileColor, // ListTile 배경색을 다크모드에 따라 변경
-            title: Text('계정관리', style: titleStyle),
+            title: Text(
+              '계정관리',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.push(
@@ -96,7 +102,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('알림설정', style: titleStyle),
+            title: Text(
+              '알림설정',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.push(
@@ -108,7 +117,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('테마 및 디스플레이', style: titleStyle),
+            title: Text(
+              '테마 및 디스플레이',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.push(
@@ -121,7 +133,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('사용자 데이터', style: titleStyle),
+            title: Text(
+              '사용자 데이터',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.push(
@@ -134,7 +149,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('공지사항', style: titleStyle),
+            title: Text(
+              '공지사항',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -148,16 +166,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return Scaffold(
                     backgroundColor: scaffoldBackgroundColor,
                     appBar: AppBar(
-                      title: Text('공지사항', style: titleStyle),
+                      title: Text(
+                        '공지사항',
+                        style: TextStyle(
+                            fontFamily: 'DoHyeonRegular', color: Colors.green),
+                      ),
                       backgroundColor: themeProvider.isDarkMode
                           ? Colors.black
-                          : Colors.green,
+                          : Colors.white,
+                      leading: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back, // 뒤로 가기 아이콘
+                          color: Colors.green, // 아이콘 색상 설정
+                        ),
+                        onPressed: () {
+                          // 뒤로 가기 버튼 눌렀을 때 동작 설정
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
                     body: ListView(
                       children: [
-                        ListTile(title: Text('3.10.0 앱 버전 업데이트')),
-                        ListTile(title: Text('서비스 점검 안내')),
-                        ListTile(title: Text('이용약관 개정 사전 안내')),
+                        ListTile(
+                          title: Text(
+                            '3.10.0 앱 버전 업데이트',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            '서비스 점검 안내',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            '이용약관 개정 사전 안내',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -166,7 +213,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('앱 정보 및 도움말', style: titleStyle),
+            title: Text(
+              '앱 정보 및 도움말',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -180,17 +230,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return Scaffold(
                     backgroundColor: scaffoldBackgroundColor,
                     appBar: AppBar(
-                      title: Text('앱 정보 및 도움말', style: titleStyle),
-                      backgroundColor: themeProvider.isDarkMode
-                          ? Colors.black
-                          : Colors.green,
-                    ),
+                        title: Text(
+                          '앱 정보 및 도움말',
+                          style: TextStyle(
+                              fontFamily: 'DoHyeonRegular',
+                              color: Colors.green),
+                        ),
+                        backgroundColor: themeProvider.isDarkMode
+                            ? Colors.black
+                            : Colors.white,
+                        leading: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back, // 뒤로 가기 아이콘
+                            color: Colors.green, // 아이콘 색상 설정
+                          ),
+                          onPressed: () {
+                            // 뒤로 가기 버튼 눌렀을 때 동작 설정
+                            Navigator.of(context).pop();
+                          },
+                        )),
                     body: ListView(
                       children: [
-                        ListTile(title: Text('앱 버전 정보')),
-                        ListTile(title: Text('FAQ (자주 묻는 질문)')),
-                        ListTile(title: Text('고객 지원 연결')),
-                        ListTile(title: Text('사용자 메뉴얼 및 튜토리얼')),
+                        ListTile(
+                          title: Text(
+                            '앱 버전 정보',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            'FAQ (자주 묻는 질문)',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            '고객 지원 연결',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            '사용자 메뉴얼 및 튜토리얼',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -199,7 +283,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('결제 및 구독', style: titleStyle),
+            title: Text(
+              '결제 및 구독',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -213,16 +300,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return Scaffold(
                     backgroundColor: scaffoldBackgroundColor,
                     appBar: AppBar(
-                      title: Text('결제 및 구독', style: titleStyle),
-                      backgroundColor: themeProvider.isDarkMode
-                          ? Colors.black
-                          : Colors.green,
-                    ),
+                        title: Text(
+                          '결제 및 구독',
+                          style: TextStyle(
+                              fontFamily: 'DoHyeonRegular',
+                              color: Colors.green),
+                        ),
+                        backgroundColor: themeProvider.isDarkMode
+                            ? Colors.black
+                            : Colors.white,
+                        leading: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back, // 뒤로 가기 아이콘
+                            color: Colors.green, // 아이콘 색상 설정
+                          ),
+                          onPressed: () {
+                            // 뒤로 가기 버튼 눌렀을 때 동작 설정
+                            Navigator.of(context).pop();
+                          },
+                        )),
                     body: ListView(
                       children: [
-                        ListTile(title: Text('결제 방식 관리')),
-                        ListTile(title: Text('구독 현황 및 변경')),
-                        ListTile(title: Text('구매 내역')),
+                        ListTile(
+                          title: Text(
+                            '결제 방식 관리',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            '구독 현황 및 변경',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            '구매 내역',
+                            style: TextStyle(fontFamily: 'DoHyeonRegular'),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -231,13 +347,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            title: Text('앱 설정 초기화', style: titleStyle),
+            title: Text(
+              '앱 설정 초기화',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: _showResetSettingsDialog,
             // Code to reset app settings to default
           ),
           ListTile(
-            title: Text('로그아웃', style: titleStyle),
+            title: Text(
+              '로그아웃',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.exit_to_app),
             onTap: _handleLogout,
           )

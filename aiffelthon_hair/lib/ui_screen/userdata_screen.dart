@@ -23,21 +23,40 @@ class _UserDataScreenState extends State<UserDataScreen> {
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor, // 배경색을 다크모드에 따라 변경
       appBar: AppBar(
-        title: Text('사용자 데이터', style: titleStyle),
+        title: Text(
+          '사용자 데이터',
+          style: TextStyle(fontFamily: 'DoHyeonRegular', color: Colors.green),
+        ),
         backgroundColor: themeProvider.isDarkMode
             ? Colors.black
-            : Colors.green, // 배경색을 다크모드에 따라 변경
+            : Colors.white, // 배경색을 다크모드에 따라 변경
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back, // 뒤로 가기 아이콘
+            color: Colors.green, // 아이콘 색상 설정
+          ),
+          onPressed: () {
+            // 뒤로 가기 버튼 눌렀을 때 동작 설정
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
           ListTile(
-            title: Text('데이터 내보내기', style: titleStyle),
+            title: Text(
+              '데이터 내보내기',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: _exportUserData,
           ),
           ListTile(
-            title: Text('데이터 삭제', style: titleStyle),
+            title: Text(
+              '데이터 삭제',
+              style: TextStyle(fontFamily: 'DoHyeonRegular'),
+            ),
             trailing: Icon(Icons.delete),
             onTap: _deleteUserData,
           ),
